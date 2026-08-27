@@ -1,44 +1,56 @@
 <div align="center">
 
-# 🐱 GATOVEL FRAMEWORK
+<!-- ====================================================== -->
+<!--                     GATOVEL                            -->
+<!-- ====================================================== -->
 
-### Seu WorkFlow simplificado.
+<img
+src="https://capsule-render.vercel.app/api?type=waving&color=0:001100,50:003300,100:00ff00&height=180&section=header&text=GATOVEL&fontSize=65&fontColor=00ff00&fontAlignY=38&desc=PHP%20FRAMEWORK&descAlignY=60&descSize=18"
+/>
 
 <br>
 
-<a href="README.md">
-<img src="https://img.shields.io/badge/■%20HOME-00FF00?style=for-the-badge&labelColor=001100&logoColor=000000">
+<!-- ====================================================== -->
+<!--                       MENU                             -->
+<!-- ====================================================== -->
+
+<a href="#gatovel">
+<img src="https://img.shields.io/badge/■%20HOME-00ff00?style=for-the-badge&labelColor=001100&logoColor=000000">
 </a>
-&nbsp;
-<a href="docs/installation.md">
-<img src="https://img.shields.io/badge/■%20INSTALL-00FF00?style=for-the-badge&labelColor=001100&logoColor=000000">
+
+<a href="#installation">
+<img src="https://img.shields.io/badge/■%20INSTALL-00ff00?style=for-the-badge&labelColor=001100">
 </a>
-&nbsp;
-<a href="docs/routing.md">
-<img src="https://img.shields.io/badge/■%20ROUTING-00FF00?style=for-the-badge&labelColor=001100&logoColor=000000">
+
+<a href="#routing">
+<img src="https://img.shields.io/badge/■%20ROUTING-00ff00?style=for-the-badge&labelColor=001100">
 </a>
-&nbsp;
-<a href="docs/controllers.md">
-<img src="https://img.shields.io/badge/■%20CONTROLLERS-00FF00?style=for-the-badge&labelColor=001100&logoColor=000000">
+
+<a href="#controllers">
+<img src="https://img.shields.io/badge/■%20CONTROLLERS-00ff00?style=for-the-badge&labelColor=001100">
 </a>
-&nbsp;
-<a href="docs/views.md">
-<img src="https://img.shields.io/badge/■%20VIEWS-00FF00?style=for-the-badge&labelColor=001100&logoColor=000000">
+
+<a href="#views">
+<img src="https://img.shields.io/badge/■%20VIEWS-00ff00?style=for-the-badge&labelColor=001100">
 </a>
-&nbsp;
-<a href="docs/database.md">
-<img src="https://img.shields.io/badge/■%20DATABASE-00FF00?style=for-the-badge&labelColor=001100&logoColor=000000">
+
+<a href="#database">
+<img src="https://img.shields.io/badge/■%20DATABASE-00ff00?style=for-the-badge&labelColor=001100">
 </a>
 
 <br><br>
 
+<!-- ====================================================== -->
+<!--                  STATUS BAR                            -->
+<!-- ====================================================== -->
+
 ```text
-╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║                    G A T O V E L                             ║
-║                                                              ║
-║              PHP RETRO GAME FRAMEWORK                        ║
-║                                                              ║
-║                  > PRESS START_                              ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║                     G A T O V E L                            ║
+║                                                                ║
+║                  PHP RETRO FRAMEWORK                           ║
+║                                                                ║
+║                 > SYSTEM ONLINE_                              ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
