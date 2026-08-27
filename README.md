@@ -1,22 +1,17 @@
-# Gatovel Framework
+<p align="center">
+  <a href="README.md">
+    <img src="https://img.shields.io/badge/🏠%20Início-blue?style=for-the-badge">
+  </a>
 
-Framework PHP desenvolvido para estudos e aprendizado de arquitetura de frameworks.
+  <a href="docs/installation.md">
+    <img src="https://img.shields.io/badge/📦%20Instalação-green?style=for-the-badge">
+  </a>
 
-## Documentação
+  <a href="docs/routing.md">
+    <img src="https://img.shields.io/badge/🛣️%20Routing-orange?style=for-the-badge">
+  </a>
 
-- [Introdução](docs/index.md)
-- [Instalação](docs/installation.md)
-- [Estrutura do projeto](docs/structure.md)
-- [Routing](docs/routing.md)
-- [Controllers](docs/controllers.md)
-- [Views](docs/views.md)
-- [Exemplos](docs/examples.md)
-
-## Sobre
-
-O Gatovel é um framework PHP desenvolvido com o objetivo de compreender,
-na prática, como funciona a estrutura interna de um framework web.
-
-## Status
-
-🚧 Em desenvolvimento
+  <a href="docs/controllers.md">
+    <img src="https://img.shields.io/badge/🎮%20Controllers-purple?style=for-the-badge">
+  </a>
+</p>
