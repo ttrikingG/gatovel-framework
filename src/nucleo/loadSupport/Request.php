@@ -4,19 +4,19 @@ namespace nucleo\loadSupport;
 
 class Request
 {
-    public static function method(): string
+    public function method(): string
     {
         return strtoupper(
             $_SERVER['REQUEST_METHOD'] ?? 'GET'
         );
     }
 
-    public static function uri(): string
+    public function uri(): string
     {
         return Uri::uri();
     }
 
-    public static function query(
+    public function query(
         ?string $key = null,
         mixed $default = null
     ): mixed {
@@ -27,7 +27,7 @@ class Request
         return $_GET[$key] ?? $default;
     }
 
-    public static function post(
+    public function post(
         ?string $key = null,
         mixed $default = null
     ): mixed {
@@ -38,7 +38,7 @@ class Request
         return $_POST[$key] ?? $default;
     }
 
-    public static function input(
+    public function input(
         ?string $key = null,
         mixed $default = null
     ): mixed {
@@ -51,7 +51,7 @@ class Request
             ?? $default;
     }
 
-    public static function header(
+    public function header(
         string $name,
         mixed $default = null
     ): mixed {
@@ -62,11 +62,11 @@ class Request
         return $_SERVER[$serverKey] ?? $default;
     }
 
-    public static function all(): array
+    public function all(): array
     {
         return [
-            'method' => self::method(),
-            'uri' => self::uri(),
+            'method' => $this->method(),
+            'uri' => $this->uri(),
             'query' => $_GET,
             'post' => $_POST,
         ];

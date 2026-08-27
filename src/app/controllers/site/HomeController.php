@@ -2,22 +2,21 @@
 
 namespace app\controllers\site;
 
+use app\controllers\Controller;
 use nucleo\loadSupport\Response;
 
-class HomeController
+class HomeController extends Controller
 {
     public function index(): Response
     {
-        return Response::html(
-            '<h1>Response funcionando!</h1>'
+        return $this->view(
+            'Home',
+            [
+                'title' => 'Minha Home',
+                'message' => 'View funcionando corretamente!',
+                'user' => 'Tom'
+            ]
         );
     }
-
-    public function teste(object $parameters): Response
-    {
-        return Response::json([
-            'status' => 'ok',
-            'id' => $parameters->id
-        ]);
-    }
 }
+

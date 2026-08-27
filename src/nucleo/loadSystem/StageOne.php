@@ -2,13 +2,14 @@
 
 namespace nucleo\loadSystem;
 
+use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Router;
 
 class StageOne
 {
-    public function load(): object
+    public function load(Request $request): object
     {
-        $controller = Router::resolve();
+        $controller = Router::resolve($request);
 
         if (
             !str_starts_with(
@@ -30,3 +31,4 @@ class StageOne
         return new $controller();
     }
 }
+

@@ -8,13 +8,18 @@ class Router
 
     private static string $method = 'index';
 
-    public static function resolve(): string
-    {
+    private static array $currentRoute = [];
+
+    public static function resolve(
+        Request $request
+    ): string {
+
         self::$parameters = [];
         self::$method = 'index';
+        self::$currentRoute = [];
 
-        $uri = Request::uri();
-        $requestMethod = Request::method();
+        $uri = $request->uri();
+        $requestMethod = $request->method();
 
         $routes = Route::routes();
 
@@ -25,6 +30,8 @@ class Router
             if (self::match($route, $uri)) {
 
                 self::$method = $data['method'];
+
+                self::$currentRoute = $data;
 
                 return $data['controller'];
             }
@@ -117,4 +124,10 @@ class Router
     {
         return self::$method;
     }
+
+    public static function currentRoute(): array
+    {
+        return self::$currentRoute;
+    }
 }
+
