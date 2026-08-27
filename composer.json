@@ -1,0 +1,12 @@
+{
+    "name": "tomgarcia/new-framework",
+    "description": "PHP framework for study",
+    "type": "project",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "nucleo\\": "src/nucleo/",
+            "app\\": "src/app/"
+        }
+    }
+}
