@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index(): Response
     {
         return $this->view(
-            'Home',
+            'home',
             [
                 'title' => 'Minha Home',
                 'message' => 'View funcionando corretamente!',

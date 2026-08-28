@@ -2,7 +2,9 @@
     "name": "tomgarcia/new-framework",
     "description": "PHP framework for study",
     "type": "project",
-    "require": {},
+    "require": {
+        "vlucas/phpdotenv": "*"
+    },
     "autoload": {
         "psr-4": {
             "nucleo\\": "src/nucleo/",

@@ -30,15 +30,17 @@ abstract class Controller
     protected function view(
         string $view,
         array $data = [],
-        int $status = 200
+        int $status = 200,
+        string $layout = 'App'
     ): Response {
-
         return Response::html(
             View::render(
                 $view,
-                $data
+                $data,
+                $layout
             ),
             $status
         );
     }
 }
+
