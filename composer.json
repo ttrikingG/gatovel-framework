@@ -1,0 +1,15 @@
+{
+    "name": "gatovel/framework",
+    "description": "The Gatovel PHP Framework — a modular and extensible framework for building modern web applications.",
+    "type": "project",
+    "require": {
+        "php": "^8.3",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "nucleo\\": "src/nucleo/",
+            "app\\": "src/"
+        }
+    }
+}
