@@ -28,6 +28,10 @@ class Installer
         echo "Database: " . ($database ? 'yes' : 'no') . PHP_EOL;
         echo "Miau: " . ($miau ? 'yes' : 'no') . PHP_EOL;
         echo PHP_EOL;
+
+        if ($cli) {
+            $this->installPackage('gatovel/cli');
+        }
     }
 
     private function ask(string $question): bool
@@ -41,5 +45,24 @@ class Installer
             ['yes', 'y']
         );
     }
-}
 
+    private function installPackage(string $package): void
+    {
+        echo PHP_EOL;
+        echo "Installing {$package}..." . PHP_EOL;
+
+        $command = "composer require {$package}";
+
+        passthru($command, $exitCode);
+
+        if ($exitCode !== 0) {
+            echo PHP_EOL;
+            echo "Failed to install {$package}." . PHP_EOL;
+
+            return;
+        }
+
+        echo PHP_EOL;
+        echo "{$package} installed successfully." . PHP_EOL;
+    }
+}
