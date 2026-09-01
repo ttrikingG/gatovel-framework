@@ -1,7 +1,7 @@
 # Gatovel Framework
 
 <p align="center">
-  <img src="docs/assets/gatovel-logo.svg" alt="Gatovel Framework" width="360">
+  <img src="docs/assets/gatovel-logo.png" alt="Gatovel Framework" width="360">
 </p>
 
 <p align="center">
