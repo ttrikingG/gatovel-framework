@@ -4,8 +4,30 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4481ffad367dc362492339e67b9b4bc8",
+    "content-hash": "103bdd52f19060e753eb3d59886eab4c",
     "packages": [
+        {
+            "name": "gatovel/cli",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "packages/cli",
+                "reference": "7f4d54bc5eb2ceb70c0a404572851991f160671b"
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gatovel\\Cli\\": "src/"
+                }
+            },
+            "description": "Command-line interface for Gatovel Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
         {
             "name": "graham-campbell/result-type",
             "version": "v1.2.0",

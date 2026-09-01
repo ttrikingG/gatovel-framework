@@ -2,8 +2,15 @@
     "name": "tomgarcia/new-framework",
     "description": "PHP framework for study",
     "type": "project",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/cli"
+        }
+    ],
     "require": {
-        "vlucas/phpdotenv": "*"
+        "vlucas/phpdotenv": "*",
+        "gatovel/cli": "1.0.0"
     },
     "autoload": {
         "psr-4": {

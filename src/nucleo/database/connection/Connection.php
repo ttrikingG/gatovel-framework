@@ -1,6 +1,6 @@
 <?php
 
-namespace nucleo\database;
+namespace nucleo\database\connection;
 
 use PDO;
 use PDOException;
