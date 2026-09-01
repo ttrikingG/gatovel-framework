@@ -2,6 +2,7 @@
     "name": "gatovel/framework",
     "description": "The Gatovel PHP Framework — a modular and extensible framework for building modern web applications.",
     "type": "project",
+    "license": "MIT",
     "require": {
         "php": "^8.3",
         "vlucas/phpdotenv": "^5.6"
