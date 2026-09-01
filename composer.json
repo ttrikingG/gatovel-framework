@@ -12,5 +12,10 @@
             "nucleo\\": "src/nucleo/",
             "app\\": "src/"
         }
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "@php -r \"require 'vendor/autoload.php'; (new \\app\\Installer())->run();\""
+        ]
     }
 }
