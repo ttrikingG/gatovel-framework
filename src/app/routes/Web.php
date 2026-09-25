@@ -3,30 +3,202 @@
 use nucleo\loadSupport\Route;
 
 Route::get(
-    '/home', 
+    '/home',
     'app\\controllers\\site\\HomeController',
     'index',
     [
-        // MIDDLEWARES
-        // 'app\\middlewares\\AuthMiddleware',
-        // 'app\\middlewares\\GuestMiddleware',
-        // 'app\\middlewares\\CsrfMiddleware',
+        'app\\middlewares\\AuthMiddleware',
     ]
 );
 
-/* ===============================================================================================================================
-   EXEMPLO
-   ===============================================================================================================================
+Route::get(
+    '/login',
+    'app\\controllers\\auth\\AuthController',
+    'showLogin',
+    [
+        'app\\middlewares\\GuestMiddleware',
+    ]
+);
 
-   Route::get(
-       '/perfil/{id}',                          1 URI "Onde o usuário vai acessar?"
-       'app\\controllers\\UserController',      2️ CONTROLLER "Quem vai cuidar da requisição?"
-       'show',                                  3️ MÉTODO "Quem vai cuidar da requisição?"
-       [
-           'app\\middlewares\\AuthMiddleware'   4️ MIDDLEWARES "Quem precisa passar pela segurança antes de chegar ao Controller?"
-       ]
-   );
+Route::post(
+    '/login',
+    'app\\controllers\\auth\\AuthController',
+    'login',
+    [
+        'app\\middlewares\\GuestMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);
 
-================================================================================================================================ */
+Route::get(
+    '/mfa',
+    'app\\controllers\\auth\\MfaController',
+    'show',
+    [
+        'app\\middlewares\\MfaChallengeMiddleware',
+    ]
+);
 
+Route::post(
+    '/mfa',
+    'app\\controllers\\auth\\MfaController',
+    'verify',
+    [
+        'app\\middlewares\\MfaChallengeMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);
 
+Route::post(
+    '/logout',
+    'app\\controllers\\auth\\AuthController',
+    'logout',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);
+
+Route::get(
+    '/oauth/{provider}',
+    'app\\controllers\\auth\\OAuthController',
+    'start'
+);
+
+Route::get(
+    '/oauth/{provider}/callback',
+    'app\\controllers\\auth\\OAuthController',
+    'callback'
+);
+
+Route::get(
+    '/users/{id}',
+    'app\\controllers\\site\\UserController',
+    'show',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'app\\middlewares\\AuthorizationMiddleware',
+    ],
+    [
+        'ability' => 'view',
+        'resource' => 'users',
+        'model' => 'app\\models\\User',
+        'parameter' => 'id',
+    ]
+);
+
+Route::post(
+    '/users',
+    'app\\controllers\\site\\UserController',
+    'create',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+        'app\\middlewares\\AuthorizationMiddleware',
+    ],
+    [
+        'ability' => 'create',
+        'resource' => 'users',
+    ]
+);
+
+Route::put(
+    '/users/{id}',
+    'app\\controllers\\site\\UserController',
+    'update',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+        'app\\middlewares\\AuthorizationMiddleware',
+    ],
+    [
+        'ability' => 'update',
+        'resource' => 'users',
+        'model' => 'app\\models\\User',
+        'parameter' => 'id',
+    ]
+);
+
+Route::delete(
+    '/users/{id}',
+    'app\\controllers\\site\\UserController',
+    'delete',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+        'app\\middlewares\\AuthorizationMiddleware',
+    ],
+    [
+        'ability' => 'delete',
+        'resource' => 'users',
+        'model' => 'app\\models\\User',
+        'parameter' => 'id',
+    ]
+);
+
+Route::get(
+    '/mfa/setup',
+    'app\\controllers\\auth\\MfaSetupController',
+    'show',
+    [
+        'app\\middlewares\\AuthMiddleware',
+    ]
+);
+
+Route::post(
+    '/mfa/setup',
+    'app\\controllers\\auth\\MfaSetupController',
+    'enable',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);
+
+Route::post(
+    '/mfa/setup/regenerate',
+    'app\\controllers\\auth\\MfaSetupController',
+    'regenerate',
+    [
+        'app\\middlewares\\AuthMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);
+
+Route::get(
+    '/forgot-password',
+    'app\\controllers\\auth\\PasswordRecoveryController',
+    'showForgotPassword',
+    [
+        'app\\middlewares\\GuestMiddleware',
+    ]
+);
+
+Route::post(
+    '/forgot-password',
+    'app\\controllers\\auth\\PasswordRecoveryController',
+    'forgotPassword',
+    [
+        'app\\middlewares\\GuestMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);
+
+Route::get(
+    '/reset-password/{token}',
+    'app\\controllers\\auth\\PasswordRecoveryController',
+    'showResetPassword',
+    [
+        'app\\middlewares\\GuestMiddleware',
+    ]
+);
+
+Route::post(
+    '/reset-password/{token}',
+    'app\\controllers\\auth\\PasswordRecoveryController',
+    'resetPassword',
+    [
+        'app\\middlewares\\GuestMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);

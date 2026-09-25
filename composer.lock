@@ -4,17 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "103bdd52f19060e753eb3d59886eab4c",
+    "content-hash": "1dad21f0c31ebe73c55116fb6ac0cc5b",
     "packages": [
         {
             "name": "gatovel/cli",
-            "version": "1.0.0",
+            "version": "v1.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ttrikingG/gatovel-cli.git",
+                "reference": "fd056e48cf13908ddd424e7326e5e3a0834ff40e"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/cli",
-                "reference": "7f4d54bc5eb2ceb70c0a404572851991f160671b"
+                "type": "zip",
+                "url": "https://api.github.com/repos/ttrikingG/gatovel-cli/zipball/fd056e48cf13908ddd424e7326e5e3a0834ff40e",
+                "reference": "fd056e48cf13908ddd424e7326e5e3a0834ff40e",
+                "shasum": ""
             },
             "require": {
+                "gatovel/database": "^1.0",
                 "php": "^8.3"
             },
             "type": "library",
@@ -23,10 +30,46 @@
                     "Gatovel\\Cli\\": "src/"
                 }
             },
-            "description": "Command-line interface for Gatovel Framework",
-            "transport-options": {
-                "relative": true
-            }
+            "notification-url": "https://packagist.org/downloads/",
+            "support": {
+                "issues": "https://github.com/ttrikingG/gatovel-cli/issues",
+                "source": "https://github.com/ttrikingG/gatovel-cli/tree/v1.0.9"
+            },
+            "time": "2026-09-03T13:29:33+00:00"
+        },
+        {
+            "name": "gatovel/database",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ttrikingG/gatovel-database.git",
+                "reference": "2fca350a49790b3705ed02fcb0fce171975a9de0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ttrikingG/gatovel-database/zipball/2fca350a49790b3705ed02fcb0fce171975a9de0",
+                "reference": "2fca350a49790b3705ed02fcb0fce171975a9de0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gatovel\\Database\\": "src/database/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Database module for Gatovel Framework",
+            "support": {
+                "issues": "https://github.com/ttrikingG/gatovel-database/issues",
+                "source": "https://github.com/ttrikingG/gatovel-database/tree/v1.0.3"
+            },
+            "time": "2026-09-17T00:30:40+00:00"
         },
         {
             "name": "graham-campbell/result-type",

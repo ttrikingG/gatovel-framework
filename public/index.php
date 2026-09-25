@@ -40,11 +40,13 @@ try {
 
             if ($parameters === null) {
 
-                return $controller->$method();
-
+                return $controller->$method(
+                    $request
+                );
             }
 
             return $controller->$method(
+                $request,
                 $parameters
             );
         }

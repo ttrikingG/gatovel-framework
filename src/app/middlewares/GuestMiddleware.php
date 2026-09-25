@@ -2,9 +2,10 @@
 
 namespace app\middlewares;
 
-use nucleo\middleware\Middleware;
+use nucleo\auth\authentication\Auth;
 use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Response;
+use nucleo\middleware\Middleware;
 
 class GuestMiddleware extends Middleware
 {
@@ -13,7 +14,7 @@ class GuestMiddleware extends Middleware
         callable $next
     ): Response {
 
-        if (isset($_SESSION['user'])) {
+        if (Auth::check()) {
             return Response::redirect('/home');
         }
 
