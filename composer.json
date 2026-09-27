@@ -2,10 +2,17 @@
     "name": "tomgarcia/new-framework",
     "description": "PHP framework for study",
     "type": "project",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/gatovel-auth"
+        }
+    ],
     "require": {
         "vlucas/phpdotenv": "*",
         "gatovel/cli": "^1.0.5",
-        "gatovel/database": "^1.0"
+        "gatovel/database": "^1.0",
+        "gatovel/auth": "dev-main"
     },
     "autoload": {
         "psr-4": {

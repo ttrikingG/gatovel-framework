@@ -33,15 +33,39 @@ class AuthController extends Controller
         if (
             !is_string($email)
             || !is_string($password)
-            || !Auth::attempt(
-                $email,
-                $password
-            )
         ) {
             return $this->view(
                 'auth.login',
                 [
-                    'error' => 'E-mail ou senha inválidos.',
+                    'error' =>
+                        'E-mail ou senha inválidos.',
+                ]
+            );
+        }
+
+        if (
+            !Auth::attempt(
+                $email,
+                $password
+            )
+        ) {
+            if (
+                Auth::emailVerificationRequired()
+            ) {
+                return $this->view(
+                    'auth.login',
+                    [
+                        'error' =>
+                            'Seu e-mail ainda não foi verificado.',
+                    ]
+                );
+            }
+
+            return $this->view(
+                'auth.login',
+                [
+                    'error' =>
+                        'E-mail ou senha inválidos.',
                 ]
             );
         }

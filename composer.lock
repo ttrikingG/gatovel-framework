@@ -4,8 +4,33 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1dad21f0c31ebe73c55116fb6ac0cc5b",
+    "content-hash": "b735d7da6f2735d025b11d04f1dcd5a1",
     "packages": [
+        {
+            "name": "gatovel/auth",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/gatovel-auth",
+                "reference": "803e3f9e060f0b7e9a790905f684e4a48e3989a0"
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "nucleo\\auth\\": "src/auth/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Authentication and authorization components for the Gatovel Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
         {
             "name": "gatovel/cli",
             "version": "v1.0.9",
@@ -548,7 +573,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "gatovel/auth": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},

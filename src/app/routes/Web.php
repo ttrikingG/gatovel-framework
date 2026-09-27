@@ -202,3 +202,28 @@ Route::post(
         'nucleo\\middleware\\CsrfMiddleware',
     ]
 );
+
+Route::get(
+    '/verify-email/{token}',
+    'app\\controllers\\auth\\EmailVerificationController',
+    'verify'
+);
+
+Route::get(
+    '/resend-verification',
+    'app\\controllers\\auth\\EmailVerificationController',
+    'showResend',
+    [
+        'app\\middlewares\\GuestMiddleware',
+    ]
+);
+
+Route::post(
+    '/resend-verification',
+    'app\\controllers\\auth\\EmailVerificationController',
+    'resend',
+    [
+        'app\\middlewares\\GuestMiddleware',
+        'nucleo\\middleware\\CsrfMiddleware',
+    ]
+);

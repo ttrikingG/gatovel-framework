@@ -5,6 +5,7 @@ namespace app\controllers\site;
 use app\controllers\Controller;
 use app\models\User;
 use nucleo\auth\authentication\Password;
+use nucleo\auth\verification\EmailVerification;
 use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Response;
 
@@ -14,7 +15,6 @@ class UserController extends Controller
         Request $request,
         object $parameters
     ): Response {
-
         $user = User::find(
             $parameters->id
         );
@@ -40,7 +40,6 @@ class UserController extends Controller
     public function create(
         Request $request
     ): Response {
-
         $name = $request->post(
             'name',
             ''
@@ -86,7 +85,8 @@ class UserController extends Controller
         ) {
             return Response::json(
                 [
-                    'error' => 'A senha deve possuir pelo menos 8 caracteres.'
+                    'error' =>
+                        'A senha deve possuir pelo menos 8 caracteres.'
                 ],
                 422
             );
@@ -102,7 +102,8 @@ class UserController extends Controller
         if ($existingUser !== null) {
             return Response::json(
                 [
-                    'error' => 'Este e-mail já está cadastrado.'
+                    'error' =>
+                        'Este e-mail já está cadastrado.'
                 ],
                 422
             );
@@ -118,6 +119,10 @@ class UserController extends Controller
 
         $user->save();
 
+        EmailVerification::send(
+            (int) $user->id
+        );
+
         return Response::json(
             [
                 'id' => $user->id,
@@ -132,7 +137,6 @@ class UserController extends Controller
         Request $request,
         object $parameters
     ): Response {
-
         $user = User::find(
             $parameters->id
         );
@@ -198,7 +202,8 @@ class UserController extends Controller
         ) {
             return Response::json(
                 [
-                    'error' => 'Este e-mail já está cadastrado.'
+                    'error' =>
+                        'Este e-mail já está cadastrado.'
                 ],
                 422
             );
@@ -213,7 +218,8 @@ class UserController extends Controller
         ) {
             return Response::json(
                 [
-                    'error' => 'A senha deve possuir pelo menos 8 caracteres.'
+                    'error' =>
+                        'A senha deve possuir pelo menos 8 caracteres.'
                 ],
                 422
             );
@@ -243,7 +249,6 @@ class UserController extends Controller
         Request $request,
         object $parameters
     ): Response {
-
         $user = User::find(
             $parameters->id
         );
@@ -261,7 +266,8 @@ class UserController extends Controller
 
         return Response::json(
             [
-                'message' => 'Usuário excluído com sucesso.'
+                'message' =>
+                    'Usuário excluído com sucesso.'
             ]
         );
     }

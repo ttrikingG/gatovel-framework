@@ -3,9 +3,9 @@
 namespace app\models;
 
 use Gatovel\Database\orm\ActiveRecord;
-use nucleo\auth\contracts\Authenticatable;
+use nucleo\auth\contracts\MfaAuthenticatable;
 
-class User extends ActiveRecord implements Authenticatable
+class User extends ActiveRecord implements MfaAuthenticatable
 {
     protected static string $table = 'users';
 
@@ -17,5 +17,10 @@ class User extends ActiveRecord implements Authenticatable
     public function getAuthPassword(): string
     {
         return $this->password;
+    }
+
+    public function getAuthEmail(): string
+    {
+        return (string) $this->email;
     }
 }

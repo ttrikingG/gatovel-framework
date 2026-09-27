@@ -65,5 +65,17 @@ use nucleo\auth\protection\Csrf;
 
 </form>
 
+<p>
+    <a href="/forgot-password">
+        Esqueci minha senha
+    </a>
+</p>
+
+<p>
+    <a href="/resend-verification">
+        Não recebi o e-mail de verificação
+    </a>
+</p>
+
 </body>
 </html>
