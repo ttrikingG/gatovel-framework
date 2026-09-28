@@ -33,9 +33,17 @@ class Installer
             $this->installPackage('gatovel/cli');
         }
 
+        if ($database) {
+            $this->installPackage('gatovel/database');
+        }
+
         if ($auth) {
             $this->installPackage('gatovel/auth');
         }
+
+        echo PHP_EOL;
+        echo "Gatovel Framework installation completed." . PHP_EOL;
+        echo PHP_EOL;
     }
 
     private function ask(string $question): bool
@@ -46,7 +54,8 @@ class Installer
 
         return in_array(
             strtolower($answer),
-            ['yes', 'y']
+            ['yes', 'y'],
+            true
         );
     }
 
@@ -70,3 +79,5 @@ class Installer
         echo "{$package} installed successfully." . PHP_EOL;
     }
 }
+
+(new Installer())->run();
