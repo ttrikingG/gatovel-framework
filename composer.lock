@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b735d7da6f2735d025b11d04f1dcd5a1",
+    "content-hash": "7ef7065fd52113d994420bfceef4578e",
     "packages": [
         {
             "name": "gatovel/auth",
-            "version": "dev-main",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ttrikingG/gatovel-auth.git",
+                "reference": "14c57cd32b306fd6b62e966d5fc49ee0a3bbcf5b"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/gatovel-auth",
-                "reference": "803e3f9e060f0b7e9a790905f684e4a48e3989a0"
+                "type": "zip",
+                "url": "https://api.github.com/repos/ttrikingG/gatovel-auth/zipball/14c57cd32b306fd6b62e966d5fc49ee0a3bbcf5b",
+                "reference": "14c57cd32b306fd6b62e966d5fc49ee0a3bbcf5b",
+                "shasum": ""
             },
             "require": {
                 "php": "^8.3"
@@ -23,13 +29,16 @@
                     "nucleo\\auth\\": "src/auth/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Authentication and authorization components for the Gatovel Framework",
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/ttrikingG/gatovel-auth/issues",
+                "source": "https://github.com/ttrikingG/gatovel-auth/tree/v1.0.0"
+            },
+            "time": "2026-09-26T15:59:32+00:00"
         },
         {
             "name": "gatovel/cli",
@@ -573,12 +582,12 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "gatovel/auth": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {},
+    "platform": {
+        "php": "^8.3"
+    },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
 }
