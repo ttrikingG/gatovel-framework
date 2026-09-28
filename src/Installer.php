@@ -29,15 +29,15 @@ class Installer
         echo "Auth: " . ($auth ? 'yes' : 'no') . PHP_EOL;
         echo PHP_EOL;
 
-        if ($cli) {
+        if ($cli === true) {
             $this->installPackage('gatovel/cli');
         }
 
-        if ($database) {
+        if ($database === true) {
             $this->installPackage('gatovel/database');
         }
 
-        if ($auth) {
+        if ($auth === true) {
             $this->installPackage('gatovel/auth');
         }
 
@@ -48,15 +48,23 @@ class Installer
 
     private function ask(string $question): bool
     {
-        echo "? {$question} [yes/no]: ";
+        while (true) {
+            echo "? {$question} [yes/no]: ";
 
-        $answer = trim(fgets(STDIN));
+            $answer = trim(fgets(STDIN));
 
-        return in_array(
-            strtolower($answer),
-            ['yes', 'y'],
-            true
-        );
+            $answer = strtolower($answer);
+
+            if ($answer === 'yes' || $answer === 'y') {
+                return true;
+            }
+
+            if ($answer === 'no' || $answer === 'n') {
+                return false;
+            }
+
+            echo "Please answer yes or no." . PHP_EOL;
+        }
     }
 
     private function installPackage(string $package): void
