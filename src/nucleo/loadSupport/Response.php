@@ -2,19 +2,25 @@
 
 namespace nucleo\loadSupport;
 
+use InvalidArgumentException;
+
 class Response
 {
     private int $status;
 
     private array $headers = [];
 
-    private mixed $content;
+    private string $content;
 
     public function __construct(
-        mixed $content = '',
+        string $content = '',
         int $status = 200,
         array $headers = []
     ) {
+        $this->validateStatus(
+            $status
+        );
+
         $this->content = $content;
         $this->status = $status;
         $this->headers = $headers;
@@ -22,17 +28,28 @@ class Response
 
     public function send(): void
     {
-        http_response_code($this->status);
+        http_response_code(
+            $this->status
+        );
 
-        foreach ($this->headers as $name => $value) {
-            header("{$name}: {$value}");
+        foreach (
+            $this->headers as $name => $value
+        ) {
+            header(
+                "{$name}: {$value}"
+            );
         }
 
         echo $this->content;
     }
 
-    public function status(int $status): static
-    {
+    public function status(
+        int $status
+    ): static {
+        $this->validateStatus(
+            $status
+        );
+
         $this->status = $status;
 
         return $this;
@@ -47,8 +64,14 @@ class Response
         return $this;
     }
 
-    public function content(mixed $content): static
+    public function headers(): array
     {
+        return $this->headers;
+    }
+
+    public function content(
+        string $content
+    ): static {
         $this->content = $content;
 
         return $this;
@@ -62,7 +85,8 @@ class Response
             $content,
             $status,
             [
-                'Content-Type' => 'text/html; charset=UTF-8'
+                'Content-Type'
+                    => 'text/html; charset=UTF-8',
             ]
         );
     }
@@ -71,17 +95,42 @@ class Response
         mixed $data,
         int $status = 200
     ): static {
+        $content = json_encode(
+            $data,
+            JSON_UNESCAPED_UNICODE |
+            JSON_UNESCAPED_SLASHES |
+            JSON_THROW_ON_ERROR
+        );
+
         return new static(
-            json_encode(
-                $data,
-                JSON_UNESCAPED_UNICODE |
-                JSON_UNESCAPED_SLASHES |
-                JSON_THROW_ON_ERROR
-            ),
+            $content,
             $status,
             [
-                'Content-Type' => 'application/json; charset=UTF-8'
+                'Content-Type'
+                    => 'application/json; charset=UTF-8',
             ]
+        );
+    }
+
+    public static function text(
+        string $content,
+        int $status = 200
+    ): static {
+        return new static(
+            $content,
+            $status,
+            [
+                'Content-Type'
+                    => 'text/plain; charset=UTF-8',
+            ]
+        );
+    }
+
+    public static function noContent(): static
+    {
+        return new static(
+            '',
+            204
         );
     }
 
@@ -93,8 +142,21 @@ class Response
             '',
             $status,
             [
-                'Location' => $url
+                'Location' => $url,
             ]
         );
+    }
+
+    private function validateStatus(
+        int $status
+    ): void {
+        if (
+            $status < 100
+            || $status > 599
+        ) {
+            throw new InvalidArgumentException(
+                "Status HTTP inválido: {$status}"
+            );
+        }
     }
 }

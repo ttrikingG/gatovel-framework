@@ -2,6 +2,11 @@
 
 namespace nucleo\loadSupport;
 
+use nucleo\exceptions\LayoutNotFoundException;
+use nucleo\exceptions\ViewNotFoundException;
+use InvalidArgumentException;
+use Throwable;
+
 class View
 {
     public static function render(
@@ -9,41 +14,118 @@ class View
         array $data = [],
         string $layout = 'App'
     ): string {
+        self::validateViewName(
+            $view
+        );
 
-        $viewFile = dirname(__DIR__, 2)
+        self::validateLayoutName(
+            $layout
+        );
+
+        $basePath = dirname(
+            __DIR__,
+            2
+        );
+
+        $viewFile = $basePath
             . '/app/views/'
-            . str_replace('.', '/', $view)
+            . str_replace(
+                '.',
+                '/',
+                $view
+            )
             . '.php';
 
-        if (!file_exists($viewFile)) {
-            throw new \Exception(
-                "View não encontrada: {$view}"
+        if (!is_file($viewFile)) {
+            throw new ViewNotFoundException(
+                $view,
+                $viewFile
             );
         }
 
-        extract($data);
+        $content = self::renderFile(
+            $viewFile,
+            $data
+        );
 
-        ob_start();
-
-        require $viewFile;
-
-        $content = ob_get_clean();
-
-        $layoutFile = dirname(__DIR__, 2)
+        $layoutFile = $basePath
             . '/app/views/layout/'
             . $layout
             . '.php';
 
-        if (!file_exists($layoutFile)) {
-            throw new \Exception(
-                "Layout não encontrado: {$layout}"
+        if (!is_file($layoutFile)) {
+            throw new LayoutNotFoundException(
+                $layout,
+                $layoutFile
             );
         }
 
+        return self::renderFile(
+            $layoutFile,
+            array_merge(
+                $data,
+                [
+                    'content' => $content,
+                ]
+            )
+        );
+    }
+
+    private static function renderFile(
+        string $file,
+        array $data
+    ): string {
+        extract(
+            $data,
+            EXTR_SKIP
+        );
+
         ob_start();
 
-        require $layoutFile;
+        try {
+            require $file;
 
-        return ob_get_clean();
+            $content = ob_get_clean();
+
+            return is_string($content)
+                ? $content
+                : '';
+        } catch (Throwable $exception) {
+            ob_end_clean();
+
+            throw $exception;
+        }
+    }
+
+    private static function validateViewName(
+        string $view
+    ): void {
+        if (
+            $view === ''
+            || !preg_match(
+                '/^[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)*$/',
+                $view
+            )
+        ) {
+            throw new InvalidArgumentException(
+                "Nome de view inválido: {$view}"
+            );
+        }
+    }
+
+    private static function validateLayoutName(
+        string $layout
+    ): void {
+        if (
+            $layout === ''
+            || !preg_match(
+                '/^[a-zA-Z0-9_-]+$/',
+                $layout
+            )
+        ) {
+            throw new InvalidArgumentException(
+                "Nome de layout inválido: {$layout}"
+            );
+        }
     }
 }

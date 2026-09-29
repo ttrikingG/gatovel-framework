@@ -2,33 +2,25 @@
 
 namespace nucleo\loadSystem;
 
+use nucleo\exceptions\ControllerNotFoundException;
 use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Router;
 
 class StageOne
 {
-    public function load(Request $request): object
-    {
-        $controller = Router::resolve($request);
-
-        if (
-            !str_starts_with(
-                $controller,
-                'app\\controllers\\'
-            )
-        ) {
-            throw new \Exception(
-                'Controller inválido.'
-            );
-        }
+    public function load(
+        Request $request
+    ): object {
+        $controller = Router::resolve(
+            $request
+        );
 
         if (!class_exists($controller)) {
-            throw new \Exception(
-                "A classe {$controller} não existe."
+            throw new ControllerNotFoundException(
+                $controller
             );
         }
 
         return new $controller();
     }
 }
-

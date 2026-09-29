@@ -2,6 +2,9 @@
 
 namespace nucleo\loadSupport;
 
+use nucleo\exceptions\MethodNotAllowedException;
+use nucleo\exceptions\RouteNotFoundException;
+
 class Router
 {
     private static array $parameters = [];
@@ -13,66 +16,133 @@ class Router
     public static function resolve(
         Request $request
     ): string {
-
-        self::$parameters = [];
-        self::$method = 'index';
-        self::$currentRoute = [];
+        self::reset();
 
         $uri = $request->uri();
         $requestMethod = $request->method();
 
         $routes = Route::routes();
 
-        foreach (
-            $routes[$requestMethod] ?? []
-            as $route => $data
-        ) {
-            if (self::match($route, $uri)) {
+        $matchedRoute = self::findRoute(
+            $routes[$requestMethod] ?? [],
+            $uri
+        );
 
-                self::$method = $data['method'];
+        if ($matchedRoute !== null) {
+            self::$parameters = $matchedRoute['parameters'];
 
-                self::$currentRoute = $data;
+            self::$method = $matchedRoute['data']['method'];
 
-                return $data['controller'];
-            }
+            self::$currentRoute = $matchedRoute['data'];
+
+            return $matchedRoute['data']['controller'];
         }
 
-        foreach ($routes as $registeredMethod => $methodRoutes) {
-
+        foreach (
+            $routes as $registeredMethod => $methodRoutes
+        ) {
             if ($registeredMethod === $requestMethod) {
                 continue;
             }
 
-            foreach ($methodRoutes as $route => $data) {
-
-                if (self::match($route, $uri)) {
-
-                    throw new \Exception(
-                        'Method Not Allowed.',
-                        405
-                    );
-                }
+            if (
+                self::findRoute(
+                    $methodRoutes,
+                    $uri
+                ) !== null
+            ) {
+                throw new MethodNotAllowedException(
+                    $requestMethod,
+                    $uri
+                );
             }
         }
 
-        throw new \Exception(
-            'Not Found.',
-            404
+        throw new RouteNotFoundException(
+            $requestMethod,
+            $uri
         );
+    }
+
+    public static function parameters(): array
+    {
+        return self::$parameters;
+    }
+
+    public static function method(): string
+    {
+        return self::$method;
+    }
+
+    public static function currentRoute(): array
+    {
+        return self::$currentRoute;
+    }
+
+    private static function findRoute(
+        array $routes,
+        string $uri
+    ): ?array {
+        foreach (
+            self::orderedRoutes($routes)
+            as $route => $data
+        ) {
+            $parameters = self::match(
+                $route,
+                $uri
+            );
+
+            if ($parameters === null) {
+                continue;
+            }
+
+            return [
+                'data' => $data,
+                'parameters' => $parameters,
+            ];
+        }
+
+        return null;
+    }
+
+    private static function orderedRoutes(
+        array $routes
+    ): array {
+        $staticRoutes = [];
+        $dynamicRoutes = [];
+
+        foreach ($routes as $route => $data) {
+            if (
+                str_contains(
+                    $route,
+                    '{'
+                )
+            ) {
+                $dynamicRoutes[$route] = $data;
+
+                continue;
+            }
+
+            $staticRoutes[$route] = $data;
+        }
+
+        return $staticRoutes + $dynamicRoutes;
     }
 
     private static function match(
         string $route,
         string $uri
-    ): bool {
+    ): ?array {
         $parameterNames = [];
 
-        $pattern = preg_quote($route, '#');
+        $pattern = preg_quote(
+            $route,
+            '#'
+        );
 
         $pattern = preg_replace_callback(
             '/\\\\\{([^}]+)\\\\\}/',
             function ($match) use (&$parameterNames) {
-
                 $name = $match[1];
 
                 if (
@@ -91,7 +161,9 @@ class Router
             $pattern
         );
 
-        $pattern = '#^' . $pattern . '$#';
+        $pattern = '#^'
+            . $pattern
+            . '$#';
 
         $matches = [];
 
@@ -102,32 +174,27 @@ class Router
                 $matches
             ) !== 1
         ) {
-            return false;
+            return null;
         }
 
-        array_shift($matches);
+        array_shift(
+            $matches
+        );
 
-        self::$parameters = array_combine(
+        if (empty($parameterNames)) {
+            return [];
+        }
+
+        return array_combine(
             $parameterNames,
             $matches
         ) ?: [];
-
-        return true;
     }
 
-    public static function parameters(): array
+    private static function reset(): void
     {
-        return self::$parameters;
-    }
-
-    public static function method(): string
-    {
-        return self::$method;
-    }
-
-    public static function currentRoute(): array
-    {
-        return self::$currentRoute;
+        self::$parameters = [];
+        self::$method = 'index';
+        self::$currentRoute = [];
     }
 }
-

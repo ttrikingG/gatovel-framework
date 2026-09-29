@@ -2,6 +2,7 @@
 
 namespace nucleo\middleware;
 
+use nucleo\exceptions\InvalidRouteDefinitionException;
 use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Response;
 
@@ -12,15 +13,21 @@ class MiddlewareRunner
         array $middlewares,
         callable $controller
     ): Response {
-
         $next = function (
             Request $request
         ) use ($controller): Response {
-
-            return $controller($request);
+            return $controller(
+                $request
+            );
         };
 
-        foreach (array_reverse($middlewares) as $middleware) {
+        foreach (
+            array_reverse($middlewares)
+            as $middleware
+        ) {
+            self::validateMiddleware(
+                $middleware
+            );
 
             $next = function (
                 Request $request
@@ -28,7 +35,6 @@ class MiddlewareRunner
                 $middleware,
                 $next
             ): Response {
-
                 $instance = new $middleware();
 
                 return $instance->handle(
@@ -38,6 +44,40 @@ class MiddlewareRunner
             };
         }
 
-        return $next($request);
+        return $next(
+            $request
+        );
+    }
+
+    private static function validateMiddleware(
+        mixed $middleware
+    ): void {
+        if (
+            !is_string($middleware)
+            || $middleware === ''
+        ) {
+            throw new InvalidRouteDefinitionException(
+                'Middleware inválido na definição da rota.'
+            );
+        }
+
+        if (!class_exists($middleware)) {
+            throw new InvalidRouteDefinitionException(
+                "Middleware não encontrado: {$middleware}"
+            );
+        }
+
+        if (
+            !is_subclass_of(
+                $middleware,
+                Middleware::class
+            )
+        ) {
+            throw new InvalidRouteDefinitionException(
+                "O middleware {$middleware} deve estender "
+                . Middleware::class
+                . '.'
+            );
+        }
     }
 }
