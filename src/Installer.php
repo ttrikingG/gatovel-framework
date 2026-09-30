@@ -16,8 +16,6 @@ class Installer
         echo "Gatovel Framework Installer" . PHP_EOL;
         echo PHP_EOL;
 
-        $this->createEnvironmentFile();
-
         $cli = $this->ask(
             'Do you want to install the Gatovel CLI?'
         );
@@ -57,38 +55,6 @@ class Installer
 
         echo PHP_EOL;
         echo "Gatovel Framework installation completed." . PHP_EOL;
-        echo PHP_EOL;
-    }
-
-    private function createEnvironmentFile(): void
-    {
-        $projectPath = dirname(__DIR__);
-
-        $environmentFile = $projectPath . '/.env';
-        $exampleFile = $projectPath . '/.env.example';
-
-        if (is_file($environmentFile)) {
-            echo "Environment file already exists." . PHP_EOL;
-            echo PHP_EOL;
-
-            return;
-        }
-
-        if (!is_file($exampleFile)) {
-            echo "Warning: .env.example was not found." . PHP_EOL;
-            echo PHP_EOL;
-
-            return;
-        }
-
-        if (!copy($exampleFile, $environmentFile)) {
-            echo "Warning: could not create .env file." . PHP_EOL;
-            echo PHP_EOL;
-
-            return;
-        }
-
-        echo "Environment file created from .env.example." . PHP_EOL;
         echo PHP_EOL;
     }
 

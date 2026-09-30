@@ -15,7 +15,7 @@
     },
     "scripts": {
         "post-create-project-cmd": [
-            "@php src/Installer.php"
+            "@php src/ProjectSetup.php"
         ]
     }
 }

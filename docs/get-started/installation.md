@@ -1,119 +1,84 @@
 # Installation
 
-This guide explains how to install the Gatovel Framework and create a new application.
+Gatovel Framework is distributed as a Composer project.
 
 ## Requirements
 
 Before installing Gatovel, make sure your environment has:
 
-- PHP 8.3 or higher
+- PHP 8.3 or newer
 - Composer
 
-Verify PHP:
+## Create a new project
 
-```bash
-php -v
-```
+Create a new Gatovel application with Composer:
 
-Verify Composer:
+    composer create-project gatovel/framework my-site
 
-```bash
-composer --version
-```
+Enter the project directory:
 
-## Create a New Project
+    cd my-site
 
-Create a Gatovel application with Composer:
+During project creation, Gatovel automatically creates the `.env` file from `.env.example` when `.env` does not already exist.
 
-```bash
-composer create-project gatovel/framework my-site
-```
+The base installation contains only the Gatovel Core and its required dependencies.
 
-Replace `my-site` with the name of your application.
+## Optional packages
 
-For example:
+Gatovel components can be installed separately according to the needs of the application.
 
-```bash
-composer create-project gatovel/framework blog
-```
+The currently supported optional packages are:
 
-Composer creates the application and installs the dependencies required by the Gatovel Core.
+- `gatovel/cli:^2.0`
+- `gatovel/database:^2.0`
+- `gatovel/auth:^1.0`
 
-## Gatovel Installer
+To run the interactive package installer:
 
-After the project is created, the Gatovel interactive installer starts automatically.
+    php src/Installer.php
 
-It asks which optional Gatovel packages should be installed:
+The installer asks whether you want to install:
 
-```text
-Gatovel Framework Installer
+- Gatovel CLI
+- Database support
+- Gatovel Auth
 
-? Do you want to install the Gatovel CLI? [yes/no]:
-? Do you want to install Database support? [yes/no]:
-? Do you want to install Gatovel Auth? [yes/no]:
-```
+Answer `yes` or `no` for each component.
 
-The base framework does not require these packages.
+## Install packages manually
 
-Selecting a component causes the installer to add its compatible package through Composer.
+Optional packages can also be installed directly with Composer.
 
-The installer currently uses:
+### CLI
 
-```text
-gatovel/cli:^2.0
-gatovel/database:^2.0
-gatovel/auth:^1.0
-```
+    composer require gatovel/cli:^2.0
 
-## CLI and Database Dependency
+### Database
 
-Gatovel CLI 2.x depends on Gatovel Database 2.x because the CLI contains database-related commands.
+    composer require gatovel/database:^2.0
 
-Therefore, selecting CLI can cause Composer to install Database even when Database was not selected separately.
+### Auth
 
-This is normal Composer dependency resolution.
+    composer require gatovel/auth:^1.0
 
-## Installing Packages Later
+## CLI and Database
 
-Optional packages can also be installed after project creation.
+Gatovel CLI 2.x uses the Gatovel Database package for migration and seeder commands.
 
-CLI:
+Because of this dependency, installing the CLI also installs a compatible `gatovel/database` 2.x version automatically.
 
-```bash
-composer require gatovel/cli:^2.0
-```
+The Database package can still be installed independently when the CLI is not required.
 
-Database:
+## Running the application
 
-```bash
-composer require gatovel/database:^2.0
-```
+Configure your web server so that the application entry point is:
 
-Auth:
+    public/index.php
 
-```bash
-composer require gatovel/auth:^1.0
-```
+During local development, make sure the environment variables in `.env` match the application environment.
 
-## Project Directory
+## Minimal installation
 
-After installation, enter the project directory:
+If no optional packages are installed, Gatovel remains a functional Core framework with routing, controllers, middleware support, views, responses, configuration, error handling, logging, and mail infrastructure.
 
-```bash
-cd my-site
-```
-
-Create the environment file:
-
-```bash
-cp .env.example .env
-```
-
-The application is now ready for configuration.
-
-## Next Step
-
-Continue with:
-
-- [Configuration](configuration.md)
-- [Architecture](../documentation/architecture.md)
+Optional components can be added later through Composer.
