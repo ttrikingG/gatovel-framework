@@ -4,6 +4,12 @@ namespace app;
 
 class Installer
 {
+    private const PACKAGES = [
+        'cli' => 'gatovel/cli:^2.0',
+        'database' => 'gatovel/database:^2.0',
+        'auth' => 'gatovel/auth:^1.0',
+    ];
+
     public function run(): void
     {
         echo PHP_EOL;
@@ -29,16 +35,22 @@ class Installer
         echo "Auth: " . ($auth ? 'yes' : 'no') . PHP_EOL;
         echo PHP_EOL;
 
-        if ($cli === true) {
-            $this->installPackage('gatovel/cli');
+        if ($cli) {
+            $this->installPackage(
+                self::PACKAGES['cli']
+            );
         }
 
-        if ($database === true) {
-            $this->installPackage('gatovel/database');
+        if ($database) {
+            $this->installPackage(
+                self::PACKAGES['database']
+            );
         }
 
-        if ($auth === true) {
-            $this->installPackage('gatovel/auth');
+        if ($auth) {
+            $this->installPackage(
+                self::PACKAGES['auth']
+            );
         }
 
         echo PHP_EOL;
@@ -51,15 +63,27 @@ class Installer
         while (true) {
             echo "? {$question} [yes/no]: ";
 
-            $answer = trim(fgets(STDIN));
+            $answer = fgets(STDIN);
 
-            $answer = strtolower($answer);
+            if ($answer === false) {
+                return false;
+            }
 
-            if ($answer === 'yes' || $answer === 'y') {
+            $answer = strtolower(
+                trim($answer)
+            );
+
+            if (
+                $answer === 'yes'
+                || $answer === 'y'
+            ) {
                 return true;
             }
 
-            if ($answer === 'no' || $answer === 'n') {
+            if (
+                $answer === 'no'
+                || $answer === 'n'
+            ) {
                 return false;
             }
 
@@ -67,14 +91,21 @@ class Installer
         }
     }
 
-    private function installPackage(string $package): void
-    {
+    private function installPackage(
+        string $package
+    ): void {
         echo PHP_EOL;
         echo "Installing {$package}..." . PHP_EOL;
 
-        $command = "composer require {$package}";
+        $command = sprintf(
+            'composer require %s --no-interaction',
+            escapeshellarg($package)
+        );
 
-        passthru($command, $exitCode);
+        passthru(
+            $command,
+            $exitCode
+        );
 
         if ($exitCode !== 0) {
             echo PHP_EOL;

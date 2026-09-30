@@ -2,104 +2,160 @@
 
 Gatovel is designed as a modular and extensible PHP framework.
 
-Its architecture is based on a lightweight core combined with optional components that can be installed independently according to the needs of each application.
+Its architecture is based on a lightweight Core combined with optional Composer packages that can be installed according to the needs of each application.
 
 ## Architecture Overview
 
-A Gatovel application is composed of the Gatovel Core and, optionally, additional components.
+A Gatovel application consists of the Gatovel Core and, optionally, additional Gatovel packages.
 
-                         GATOVEL APPLICATION
-                                  ┃
-                 ┏━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┓
-                 ┃                                 ┃
-                 ▼                                 ▼
-        ┏━━━━━━━━━━━━━━━━┓              ┏━━━━━━━━━━━━━━━━━━━━┓
-        ┃  GATOVEL CORE  ┃              ┃ OPTIONAL COMPONENTS┃
-        ┣━━━━━━━━━━━━━━━━┫              ┗━━━━━━━━━━┳━━━━━━━━━┛
-        ┃                ┃                         ┃
-        ┃  Request       ┃              ┏━━━━━━━━━╋━━━━━━━━━┓
-        ┃  Router        ┃              ┃         ┃         ┃
-        ┃  Middleware    ┃              ▼         ▼         ▼
-        ┃  View          ┃          ┏━━━━━━━┓ ┏━━━━━━━━━┓ ┏━━━━━━━┓
-        ┃  Response      ┃          ┃  CLI  ┃ ┃Database ┃ ┃ Miau  ┃
-        ┃  Lifecycle     ┃          ┗━━━┳━━━┛ ┗━━━━┳━━━━┛ ┗━━━┳━━━┛
-        ┗━━━━━━━━━━━━━━━━┛              ┃           ┃          ┃
-                                        ▼           ▼          ▼
-                                    Composer    Composer    Composer
-                                     Package     Package     Package
+```text
+                     GATOVEL APPLICATION
+                             │
+             ┌───────────────┴───────────────┐
+             │                               │
+             ▼                               ▼
+      ┌──────────────┐                ┌───────────────┐
+      │ GATOVEL CORE │                │   OPTIONAL    │
+      │              │                │   PACKAGES    │
+      └──────┬───────┘                └───────┬───────┘
+             │                                │
+      ┌──────┴──────┐              ┌──────────┼──────────┐
+      │             │              │          │          │
+      │ Request     │              ▼          ▼          ▼
+      │ Router      │             CLI      Database     Auth
+      │ Middleware  │
+      │ View        │
+      │ Response    │
+      │ Errors      │
+      │ Logging     │
+      │ Mail        │
+      │ Config      │
+      └─────────────┘
+```
 
-The Core provides the fundamental functionality required to run a Gatovel application.
+The Core provides the fundamental infrastructure required to run a Gatovel application.
 
-Additional functionality is provided through independent Composer packages.
+Optional functionality is distributed through independent Composer packages.
 
 ## Core
 
 The Gatovel Core is the foundation of the framework.
 
-It is responsible for the fundamental application lifecycle and HTTP request processing.
+It is responsible for the HTTP lifecycle and the fundamental services required by an application.
 
-The Core includes functionality such as:
+The Core includes:
 
-* Request handling
-* Routing
-* Middleware execution
-* Controller resolution
-* View rendering
-* Response handling
-* Error handling
-* Application lifecycle
+- Request handling
+- Routing
+- Middleware execution
+- Controller resolution
+- View rendering
+- Response handling
+- Configuration
+- Error handling
+- Logging
+- Mail
+- Application lifecycle
 
-The Core is intentionally kept lightweight so applications do not have to install functionality they do not need.
+The Core does not require the Gatovel CLI, Database, or Auth packages in order to run.
 
-## Optional Components
+This keeps the base framework lightweight and prevents applications from installing functionality they do not need.
 
-Gatovel components are designed to be installed independently from the Core.
+## Optional Packages
 
-Examples include:
+Additional functionality is provided through independent Composer packages.
 
-* CLI
-* Database
-* Miau
-* Future framework components
+The currently supported optional packages are:
 
-These components are distributed as separate Composer packages.
+```text
+gatovel/cli
+gatovel/database
+gatovel/auth
+```
 
-An application can therefore select the functionality it requires during installation.
+They can be selected during project installation or installed later using Composer.
 
-For example:
+### CLI
+
+The CLI package provides command-line tools for Gatovel applications.
+
+The current compatible version is:
+
+```text
+gatovel/cli ^2.0
+```
+
+The CLI 2.x package uses the Gatovel Database package for its database-related commands. Therefore, installing the CLI also installs a compatible Database package through Composer.
+
+### Database
+
+The Database package provides the persistence layer independently from the Core.
+
+The current compatible version is:
+
+```text
+gatovel/database ^2.0
+```
+
+It provides database-related functionality such as connections, queries, transactions, schema operations, migrations and seeders.
+
+### Auth
+
+The Auth package provides authentication and authorization-related components independently from the Core.
+
+The current compatible version is:
+
+```text
+gatovel/auth ^1.0
+```
+
+The package contains authentication-related functionality without making Auth a dependency of the Gatovel Core.
+
+## Installer
+
+When a project is created with:
+
+```bash
+composer create-project gatovel/framework my-site
+```
+
+Gatovel runs its interactive installer.
+
+The installer asks which optional packages should be added:
 
 ```text
 Gatovel Framework Installer
 
-? Install CLI?       Yes
-? Install Database?  Yes
-? Install Miau?      No
+? Do you want to install the Gatovel CLI? [yes/no]:
+? Do you want to install Database support? [yes/no]:
+? Do you want to install Gatovel Auth? [yes/no]:
 ```
 
-Only the selected components are installed into the application.
+Only the selected packages are explicitly added to the application.
 
-This approach keeps the framework modular and allows individual components to evolve independently.
+Composer can also install transitive dependencies required by a selected package. For example, Gatovel CLI 2.x requires Gatovel Database 2.x.
 
 ## Composer Packages
 
-Optional components are managed through Composer.
-
-The Gatovel Framework package provides the base framework, while additional functionality can be added through separate packages.
+The package architecture is:
 
 ```text
 gatovel/framework
-       │
-       ├── gatovel/cli
-       ├── gatovel/database
-       ├── gatovel/miau
-       └── ...
+│
+├── Core
+│
+├── gatovel/cli       optional
+├── gatovel/database  optional
+└── gatovel/auth      optional
 ```
 
-The exact list of available components may evolve as the framework develops.
+The framework package contains the Core and application skeleton.
+
+Optional components are versioned and distributed separately.
 
 ## Application Lifecycle
 
-The HTTP lifecycle begins at the application's public entry point.
+The HTTP lifecycle begins at the public entry point:
 
 ```text
 HTTP Request
@@ -140,21 +196,19 @@ HTTP Response
 
 ### Entry Point
 
-The application receives HTTP requests through the public entry point:
+HTTP requests enter the application through:
 
 ```text
 public/index.php
 ```
 
-The entry point loads the framework bootstrap and starts the application lifecycle.
+The entry point loads the bootstrap and starts request processing.
 
 ### Bootstrap
 
-The bootstrap process prepares the application environment before request processing begins.
+The bootstrap prepares the application environment.
 
-It is responsible for loading Composer's autoloader and initializing the resources required by the application.
-
-Optional components can integrate into the application during this process.
+It loads Composer's autoloader, environment variables, application configuration, providers and routes.
 
 ### Request
 
@@ -162,48 +216,34 @@ The `Request` component provides an abstraction over the incoming HTTP request.
 
 It provides access to information such as:
 
-* HTTP method
-* URI
-* Query parameters
-* POST data
-* Request input
-* HTTP headers
-
-Instead of accessing PHP superglobals directly throughout the application, application components can work with the `Request` abstraction.
+- HTTP method
+- URI
+- Query parameters
+- POST data
+- Request input
+- HTTP headers
 
 ### Routing
 
-The Router determines which controller and method should handle the incoming request.
+The Router determines which controller and method should handle an incoming request.
 
-Routes can contain parameters.
-
-For example:
+Routes can also contain parameters:
 
 ```text
 /users/{id}
 ```
 
-When a request matches the route, the Router extracts the parameters and makes them available to the application.
-
-The Router is also responsible for distinguishing between:
-
-* Not Found
-* Method Not Allowed
-* Valid routes
+The Router distinguishes between valid routes, routes that do not exist and routes called with unsupported HTTP methods.
 
 ### Controller Resolution
 
-After a route is resolved, Gatovel determines the controller responsible for handling the request.
+After a route is matched, Gatovel resolves the controller and method responsible for processing the request.
 
-The controller is instantiated and validated before the requested method is executed.
-
-The framework separates this process into stages so that each part of request resolution has a defined responsibility.
+The framework separates this process into lifecycle stages with defined responsibilities.
 
 ### Middleware
 
-Middleware provides a mechanism for processing a request before it reaches the controller.
-
-Multiple middleware components can be executed as a pipeline.
+Middleware can process a request before it reaches the controller.
 
 ```text
 Request
@@ -221,127 +261,108 @@ Controller
 Response
 ```
 
-A middleware can:
-
-* inspect a request;
-* modify or validate request processing;
-* stop the request;
-* pass execution to the next middleware;
-* process the resulting response.
+Middleware can inspect requests, stop processing, pass execution to the next middleware and process the resulting response.
 
 ### Controller
 
 Controllers contain application-specific request handling logic.
 
-The framework resolves the controller and invokes the method associated with the matched route.
-
-The Core does not define the business logic of an application. That responsibility belongs to the application itself.
+The Core provides the infrastructure for invoking controllers but does not define application business logic.
 
 ### View
 
-The View component is responsible for rendering application views.
-
-Views are separated from request routing and controller resolution, allowing presentation logic to remain independent from the framework's HTTP processing.
+The View component renders application views and keeps presentation separate from routing and controller resolution.
 
 ### Response
 
 The `Response` component represents the result returned to the client.
 
-Gatovel supports different response types, including:
+Responses can include:
 
-* HTML responses
-* JSON responses
-* Redirect responses
-* Custom HTTP status codes
-* Custom HTTP headers
-
-A response is sent to the client after the application lifecycle has completed.
+- HTML
+- JSON
+- Redirects
+- HTTP status codes
+- HTTP headers
 
 ## Separation of Responsibilities
 
-Gatovel follows a separation of responsibilities between the framework and the application.
+Gatovel separates framework infrastructure from application code.
 
 ```text
 Gatovel Core
-     │
-     ├── HTTP lifecycle
-     ├── Routing
-     ├── Middleware
-     ├── Request / Response
-     └── View system
-     
+│
+├── HTTP lifecycle
+├── Routing
+├── Middleware
+├── Request / Response
+├── Views
+├── Configuration
+├── Errors
+├── Logging
+└── Mail
+
 Application
-     │
-     ├── Controllers
-     ├── Models
-     ├── Services
-     ├── Routes
-     └── Business logic
+│
+├── Controllers
+├── Services
+├── Routes
+├── Views
+└── Business logic
 ```
 
-The framework provides the infrastructure required to run the application, while the application defines its own domain and business rules.
+Database models and persistence-related application code can be added when the Database package is installed.
+
+Authentication-related application code can be added when the Auth package is installed.
 
 ## Modularity
 
 Modularity is a fundamental principle of Gatovel.
 
-The Core should not depend on optional components such as Database or CLI.
-
-Instead, optional functionality is added through independent packages.
+The Core does not depend on optional Gatovel packages.
 
 ```text
-             ┌──────────────┐
-             │ Gatovel Core │
-             └──────┬───────┘
-                    │
-          ┌─────────┴─────────┐
-          │                   │
-     Optional Package   Optional Package
-          │                   │
-       Database              CLI
+              ┌──────────────┐
+              │ Gatovel Core │
+              └──────┬───────┘
+                     │
+          ┌──────────┼──────────┐
+          │          │          │
+          ▼          ▼          ▼
+         CLI      Database     Auth
+       optional    optional    optional
 ```
 
-This architecture allows components to be:
+This architecture allows packages to be:
 
-* developed independently;
-* versioned independently;
-* installed only when required;
-* replaced or extended without unnecessarily increasing the Core.
-
-## Database Component
-
-Database support is an optional Gatovel component.
-
-It is intentionally separated from the Core so that the database layer can evolve independently from the framework's fundamental HTTP and application lifecycle.
-
-The Database component is planned to provide database-related functionality through its own Composer package.
-
-Its implementation and API are maintained independently from the Gatovel Core.
+- developed independently;
+- versioned independently;
+- installed only when required;
+- updated independently;
+- extended without unnecessarily increasing the Core.
 
 ## Design Principles
 
-The architecture of Gatovel is guided by several principles:
-
 ### Lightweight Core
 
-The Core should provide only the functionality necessary to establish the framework's fundamental behavior.
+The Core contains the fundamental functionality required to run a Gatovel application.
 
 ### Modularity
 
-Additional functionality should be provided through independent components whenever possible.
+Additional functionality should be provided through independent packages whenever possible.
 
 ### Separation of Responsibilities
 
-Each part of the framework should have a clear responsibility.
+Each component should have a clear responsibility.
 
 ### Extensibility
 
-Applications should be able to extend framework behavior without modifying the Core itself.
+Applications should be able to extend framework behavior without modifying the Core.
 
 ### Independent Evolution
 
-Optional components should be able to evolve independently from the Core.
+Optional packages should be able to evolve independently from the Core.
 
 ### Composer Integration
 
-Composer is used as the package management mechanism for the framework and its optional components.
+Composer is the package management mechanism used by Gatovel and its optional packages.

@@ -1,65 +1,90 @@
 # Configuration
 
-After installing Gatovel, the next step is configuring your application.
+After installing Gatovel, configure the application environment.
 
-Gatovel uses environment variables and configuration files to define application settings.
+Gatovel uses environment variables and PHP configuration files.
 
-## Environment Variables
+## Environment File
 
-Create your environment file from the provided example:
+Create `.env` from the provided example:
 
 ```bash
 cp .env.example .env
 ```
 
-The `.env` file contains environment-specific values used by the application.
-
-For example:
+The base environment file contains settings used by the Core:
 
 ```env
-APP_ENV=development
+APP_NAME=Gatovel
+APP_ENV=local
 APP_DEBUG=true
-APP_URL=http://localhost
+
+LOG_ENABLED=true
+LOG_PATH=
+
+MAIL_TRANSPORT=log
+MAIL_LOG_PATH=
 ```
 
-> Do not commit your `.env` file to version control. Use `.env.example` to provide the required variables for other environments.
+The `.env` file contains environment-specific values and should not be committed to version control.
 
-## Configuration Files
+The `.env.example` file documents the environment variables expected by the base application.
 
-Application configuration is stored in the `config/` directory.
+## Core Configuration
+
+The base framework contains:
 
 ```text
 config/
-└── database.php
+├── app.php
+├── logging.php
+└── mail.php
 ```
 
-Configuration files contain settings used by specific parts of the application.
+### Application
 
-Environment variables can be used to provide values that should differ between environments.
+`config/app.php` contains application-level settings such as:
 
-## Application Environment
+- application name;
+- environment;
+- debug mode;
+- application providers.
 
-The application environment determines how Gatovel should behave.
+### Logging
 
-A development environment may enable debugging:
+`config/logging.php` configures the Core logging system.
+
+Environment variables:
 
 ```env
-APP_ENV=development
-APP_DEBUG=true
+LOG_ENABLED=true
+LOG_PATH=
 ```
 
-While a production environment should disable debugging:
+When no custom path is provided, Gatovel uses its default log location.
+
+### Mail
+
+`config/mail.php` configures the Core mail system.
+
+The default transport is the log transport:
 
 ```env
-APP_ENV=production
-APP_DEBUG=false
+MAIL_TRANSPORT=log
+MAIL_LOG_PATH=
 ```
 
-## Database Configuration
+## Optional Package Configuration
 
-If Database support was selected during installation, database configuration can be defined through the environment file.
+Configuration for optional packages is not part of the base Core configuration.
 
-Example:
+Installing an optional package adds functionality to the project, but application-specific configuration must be defined according to the package being used.
+
+### Database
+
+The Gatovel Database package is optional.
+
+When an application uses Database, database environment variables can be defined according to its connection requirements, for example:
 
 ```env
 DB_CONNECTION=mysql
@@ -68,12 +93,39 @@ DB_PORT=3306
 DB_DATABASE=my_database
 DB_USERNAME=root
 DB_PASSWORD=
+DB_CHARSET=utf8mb4
 ```
 
-The exact database options depend on the database component installed in the application.
+These variables are not included in the base `.env.example` because Database is not a Core dependency.
+
+### Auth
+
+The Gatovel Auth package is optional.
+
+Authentication, OAuth and other Auth-specific configuration should only be added by applications that use those features.
+
+Auth-specific environment variables are therefore not included in the base `.env.example`.
+
+## Application Environment
+
+For local development:
+
+```env
+APP_ENV=local
+APP_DEBUG=true
+```
+
+For production:
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+```
+
+Debug mode should normally be disabled in production.
 
 ## Next Step
 
-Once your application has been configured, continue with:
+For more information about the framework structure, continue with:
 
-* [First Application](first-application.md)
+- [Architecture](../documentation/architecture.md)

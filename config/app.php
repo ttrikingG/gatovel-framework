@@ -1,7 +1,5 @@
 <?php
 
-use app\providers\AuthServiceProvider;
-use app\providers\DatabaseServiceProvider;
 use app\providers\MailServiceProvider;
 
 return [
@@ -57,10 +55,6 @@ return [
     */
 
     'providers' => [
-
-        DatabaseServiceProvider::class,
-
-        AuthServiceProvider::class,
 
         MailServiceProvider::class,
 

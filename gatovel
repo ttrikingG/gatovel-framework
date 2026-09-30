@@ -3,9 +3,18 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-use Gatovel\Cli\Application;
+if (!class_exists(\Gatovel\Cli\Application::class)) {
+    fwrite(
+        STDERR,
+        "Gatovel CLI is not installed." . PHP_EOL
+        . "Install it with: composer require gatovel/cli:^2.0"
+        . PHP_EOL
+    );
 
-$application = new Application();
+    exit(1);
+}
+
+$application = new \Gatovel\Cli\Application();
 
 exit(
     $application->run($argv)
