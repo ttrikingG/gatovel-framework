@@ -4,6 +4,7 @@
 # Variáveis de ambiente
 .env
 .env.*
+!.env.example
 
 # Arquivos do sistema
 .DS_Store
