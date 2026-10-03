@@ -1,6 +1,7 @@
 <?php
 
 use app\providers\MailServiceProvider;
+use nucleo\middleware\CorsMiddleware;
 
 return [
 
@@ -57,6 +58,24 @@ return [
     'providers' => [
 
         MailServiceProvider::class,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Global Middlewares
+    |--------------------------------------------------------------------------
+    |
+    | Middlewares executados em todas as requisições da aplicação.
+    |
+    | Esses middlewares envolvem todo o ciclo da requisição e podem
+    | executar lógica antes e depois do roteamento e do controller.
+    |
+    */
+
+    'middlewares' => [
+
+        CorsMiddleware::class,
 
     ],
 

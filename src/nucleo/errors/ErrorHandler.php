@@ -15,6 +15,16 @@ class ErrorHandler
         Throwable $exception,
         ?Request $request = null
     ): void {
+        self::render(
+            $exception,
+            $request
+        )->send();
+    }
+
+    public static function render(
+        Throwable $exception,
+        ?Request $request = null
+    ): Response {
         Logger::error(
             $exception
         );
@@ -37,12 +47,10 @@ class ErrorHandler
                 $debug
             );
 
-            Response::json(
+            return Response::json(
                 $data,
                 $statusCode
-            )->send();
-
-            return;
+            );
         }
 
         if ($debug) {
@@ -51,12 +59,10 @@ class ErrorHandler
                 $statusCode
             );
 
-            Response::html(
+            return Response::html(
                 $html,
                 $statusCode
-            )->send();
-
-            return;
+            );
         }
 
         $html = ErrorPageRenderer::render(
@@ -64,10 +70,10 @@ class ErrorHandler
             $statusCode
         );
 
-        Response::html(
+        return Response::html(
             $html,
             $statusCode
-        )->send();
+        );
     }
 
     private static function statusCode(

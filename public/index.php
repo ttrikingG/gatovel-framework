@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use nucleo\config\Config;
 use nucleo\errors\ErrorHandler;
 use nucleo\loadSystem\StageOne;
 use nucleo\loadSystem\StageTwo;
@@ -19,40 +20,62 @@ try {
 
     $request = new Request();
 
-    $controller = (new StageOne())->load(
-        $request
+    $globalMiddlewares = Config::get(
+        'app.middlewares',
+        []
     );
-
-    $method = (new StageTwo())->load(
-        $controller
-    );
-
-    $parameters = (new StageThree())->load();
-
-    $route = Router::currentRoute();
-
-    $middlewares = $route['middlewares'] ?? [];
 
     $response = MiddlewareRunner::run(
         $request,
-        $middlewares,
-        function (Request $request) use (
-            $controller,
-            $method,
-            $parameters
-        ): Response {
+        $globalMiddlewares,
+        function (Request $request): Response {
 
-            if ($parameters === null) {
+            try {
 
-                return $controller->$method(
+                $controller = (new StageOne())->load(
+                    $request
+                );
+
+                $method = (new StageTwo())->load(
+                    $controller
+                );
+
+                $parameters = (new StageThree())->load();
+
+                $route = Router::currentRoute();
+
+                $middlewares = $route['middlewares'] ?? [];
+
+                return MiddlewareRunner::run(
+                    $request,
+                    $middlewares,
+                    function (Request $request) use (
+                        $controller,
+                        $method,
+                        $parameters
+                    ): Response {
+
+                        if ($parameters === null) {
+
+                            return $controller->$method(
+                                $request
+                            );
+                        }
+
+                        return $controller->$method(
+                            $request,
+                            $parameters
+                        );
+                    }
+                );
+
+            } catch (\Throwable $exception) {
+
+                return ErrorHandler::render(
+                    $exception,
                     $request
                 );
             }
-
-            return $controller->$method(
-                $request,
-                $parameters
-            );
         }
     );
 
