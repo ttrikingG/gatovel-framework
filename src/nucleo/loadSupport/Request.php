@@ -6,6 +6,8 @@ class Request
 {
     private ?array $body = null;
 
+    private ?array $uploadedFiles = null;
+
     public function method(): string
     {
         return strtoupper(
@@ -73,7 +75,6 @@ class Request
         $data = [];
 
         foreach ($keys as $key) {
-
             if (!is_string($key)) {
                 continue;
             }
@@ -86,6 +87,65 @@ class Request
         }
 
         return $data;
+    }
+
+    public function file(
+        string $key
+    ): UploadedFile|array|null {
+        $files = $this->files();
+
+        return $files[$key]
+            ?? null;
+    }
+
+    public function hasFile(
+        string $key
+    ): bool {
+        $file = $this->file(
+            $key
+        );
+
+        if ($file instanceof UploadedFile) {
+            return $file->error()
+                !== UPLOAD_ERR_NO_FILE;
+        }
+
+        if (is_array($file)) {
+            return $this->containsUploadedFile(
+                $file
+            );
+        }
+
+        return false;
+    }
+
+    public function files(): array
+    {
+        if ($this->uploadedFiles !== null) {
+            return $this->uploadedFiles;
+        }
+
+        $this->uploadedFiles = [];
+
+        foreach ($_FILES as $key => $file) {
+            if (
+                !is_string($key)
+                || !is_array($file)
+            ) {
+                continue;
+            }
+
+            $normalized = $this->normalizeUploadedFile(
+                $file
+            );
+
+            if ($normalized !== null) {
+                $this->uploadedFiles[$key]
+                    = $normalized;
+            }
+        }
+
+        return $this->uploadedFiles;
     }
 
     public function header(
@@ -203,6 +263,7 @@ class Request
             'uri' => $this->uri(),
             'query' => $_GET,
             'body' => $this->body(),
+            'files' => $this->files(),
         ];
     }
 
@@ -297,5 +358,125 @@ class Request
         }
 
         return trim($content);
+    }
+
+    private function normalizeUploadedFile(
+        array $file
+    ): UploadedFile|array|null {
+        if (
+            !array_key_exists('name', $file)
+            || !array_key_exists('tmp_name', $file)
+            || !array_key_exists('error', $file)
+            || !array_key_exists('size', $file)
+        ) {
+            return null;
+        }
+
+        if (is_array($file['name'])) {
+            return $this->normalizeUploadedFileArray(
+                $file['name'],
+                $file['tmp_name'],
+                $file['error'],
+                $file['size']
+            );
+        }
+
+        if (
+            !is_string($file['name'])
+            || !is_string($file['tmp_name'])
+            || !is_int($file['error'])
+            || !is_int($file['size'])
+        ) {
+            return null;
+        }
+
+        return new UploadedFile(
+            $file['name'],
+            $file['tmp_name'],
+            $file['error'],
+            $file['size']
+        );
+    }
+
+    private function normalizeUploadedFileArray(
+        array $names,
+        mixed $temporaryPaths,
+        mixed $errors,
+        mixed $sizes
+    ): array {
+        if (
+            !is_array($temporaryPaths)
+            || !is_array($errors)
+            || !is_array($sizes)
+        ) {
+            return [];
+        }
+
+        $files = [];
+
+        foreach ($names as $key => $name) {
+            if (
+                !array_key_exists($key, $temporaryPaths)
+                || !array_key_exists($key, $errors)
+                || !array_key_exists($key, $sizes)
+            ) {
+                continue;
+            }
+
+            if (is_array($name)) {
+                $files[$key]
+                    = $this->normalizeUploadedFileArray(
+                        $name,
+                        $temporaryPaths[$key],
+                        $errors[$key],
+                        $sizes[$key]
+                    );
+
+                continue;
+            }
+
+            if (
+                !is_string($name)
+                || !is_string($temporaryPaths[$key])
+                || !is_int($errors[$key])
+                || !is_int($sizes[$key])
+            ) {
+                continue;
+            }
+
+            $files[$key] = new UploadedFile(
+                $name,
+                $temporaryPaths[$key],
+                $errors[$key],
+                $sizes[$key]
+            );
+        }
+
+        return $files;
+    }
+
+    private function containsUploadedFile(
+        array $files
+    ): bool {
+        foreach ($files as $file) {
+            if (
+                $file instanceof UploadedFile
+                && $file->error()
+                    !== UPLOAD_ERR_NO_FILE
+            ) {
+                return true;
+            }
+
+            if (
+                is_array($file)
+                && $this->containsUploadedFile(
+                    $file
+                )
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
