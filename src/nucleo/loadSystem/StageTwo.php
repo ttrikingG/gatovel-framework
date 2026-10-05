@@ -3,7 +3,7 @@
 namespace nucleo\loadSystem;
 
 use nucleo\exceptions\controller\MethodNotFoundException;
-use nucleo\loadSupport\Router;
+use nucleo\routing\Router;
 
 class StageTwo
 {

@@ -2,7 +2,7 @@
 
 namespace nucleo\loadSystem;
 
-use nucleo\loadSupport\Router;
+use nucleo\routing\Router;
 
 class StageThree
 {

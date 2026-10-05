@@ -1,9 +1,10 @@
 <?php
 
-namespace nucleo\loadSupport;
+namespace nucleo\routing;
 
 use nucleo\exceptions\http\MethodNotAllowedException;
 use nucleo\exceptions\routing\RouteNotFoundException;
+use nucleo\http\Request;
 
 class Router
 {

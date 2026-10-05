@@ -1,6 +1,6 @@
 <?php
 
-namespace nucleo\loadSupport;
+namespace nucleo\routing;
 
 use nucleo\exceptions\routing\InvalidRouteDefinitionException;
 

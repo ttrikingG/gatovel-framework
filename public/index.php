@@ -7,16 +7,19 @@ use nucleo\errors\ErrorHandler;
 use nucleo\loadSystem\StageOne;
 use nucleo\loadSystem\StageTwo;
 use nucleo\loadSystem\StageThree;
-use nucleo\loadSupport\Request;
-use nucleo\loadSupport\Response;
-use nucleo\loadSupport\Router;
+use nucleo\http\Request;
+use nucleo\http\Response;
+use nucleo\routing\Router;
 use nucleo\middleware\MiddlewareRunner;
+use nucleo\session\Session;
 
 $request = null;
 
 try {
 
     require_once __DIR__ . '/../bootstrap.php';
+
+    Session::start();
 
     $request = new Request();
 
@@ -87,4 +90,8 @@ try {
         $exception,
         $request
     );
+
+} finally {
+
+    Session::close();
 }

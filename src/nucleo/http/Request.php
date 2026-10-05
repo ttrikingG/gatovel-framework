@@ -1,6 +1,8 @@
 <?php
 
-namespace nucleo\loadSupport;
+namespace nucleo\http;
+
+use nucleo\routing\Uri;
 
 class Request
 {
@@ -52,6 +54,14 @@ class Request
 
         return $_GET[$key]
             ?? $default;
+    }
+
+    public function inputs(): array
+    {
+        return array_merge(
+            $_GET,
+            $this->body()
+        );
     }
 
     public function has(

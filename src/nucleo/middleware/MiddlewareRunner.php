@@ -3,8 +3,8 @@
 namespace nucleo\middleware;
 
 use nucleo\exceptions\routing\InvalidRouteDefinitionException;
-use nucleo\loadSupport\Request;
-use nucleo\loadSupport\Response;
+use nucleo\http\Request;
+use nucleo\http\Response;
 
 class MiddlewareRunner
 {

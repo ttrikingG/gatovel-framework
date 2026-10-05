@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
-use nucleo\loadSupport\Response;
-use nucleo\loadSupport\View;
+use nucleo\http\Response;
+use nucleo\view\View;
 
 abstract class Controller
 {

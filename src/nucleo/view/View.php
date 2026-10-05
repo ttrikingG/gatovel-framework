@@ -1,6 +1,6 @@
 <?php
 
-namespace nucleo\loadSupport;
+namespace nucleo\view;
 
 use nucleo\exceptions\view\LayoutNotFoundException;
 use nucleo\exceptions\view\ViewNotFoundException;

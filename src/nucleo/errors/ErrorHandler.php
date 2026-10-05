@@ -4,8 +4,8 @@ namespace nucleo\errors;
 
 use nucleo\config\Config;
 use nucleo\exceptions\GatovelException;
-use nucleo\loadSupport\Request;
-use nucleo\loadSupport\Response;
+use nucleo\http\Request;
+use nucleo\http\Response;
 use nucleo\logging\Logger;
 use Throwable;
 

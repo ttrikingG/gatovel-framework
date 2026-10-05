@@ -3,8 +3,8 @@
 namespace nucleo\middleware;
 
 use nucleo\config\Config;
-use nucleo\loadSupport\Request;
-use nucleo\loadSupport\Response;
+use nucleo\http\Request;
+use nucleo\http\Response;
 
 class CorsMiddleware extends Middleware
 {

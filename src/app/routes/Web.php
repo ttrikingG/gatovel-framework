@@ -1,6 +1,6 @@
 <?php
 
-use nucleo\loadSupport\Route;
+use nucleo\routing\Route;
 
 Route::get(
     '/',

@@ -2,8 +2,8 @@
 
 namespace nucleo\middleware;
 
-use nucleo\loadSupport\Request;
-use nucleo\loadSupport\Response;
+use nucleo\http\Request;
+use nucleo\http\Response;
 
 abstract class Middleware
 {

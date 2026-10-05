@@ -3,8 +3,8 @@
 namespace app\controllers\site;
 
 use app\controllers\Controller;
-use nucleo\loadSupport\Request;
-use nucleo\loadSupport\Response;
+use nucleo\http\Request;
+use nucleo\http\Response;
 
 class HomeController extends Controller
 {
