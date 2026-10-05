@@ -2,7 +2,7 @@
 
 namespace nucleo\config;
 
-use nucleo\exceptions\ConfigurationException;
+use nucleo\exceptions\configuration\ConfigurationException;
 
 class Config
 {

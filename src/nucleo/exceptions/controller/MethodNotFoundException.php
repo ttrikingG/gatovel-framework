@@ -1,6 +1,8 @@
 <?php
 
-namespace nucleo\exceptions;
+namespace nucleo\exceptions\controller;
+
+use nucleo\exceptions\GatovelException;
 
 class MethodNotFoundException extends GatovelException
 {

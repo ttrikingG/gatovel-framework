@@ -2,7 +2,7 @@
 
 namespace nucleo\providers;
 
-use nucleo\exceptions\ProviderException;
+use nucleo\exceptions\provider\ProviderException;
 
 class ProviderLoader
 {

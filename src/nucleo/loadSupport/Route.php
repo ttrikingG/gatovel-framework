@@ -2,7 +2,7 @@
 
 namespace nucleo\loadSupport;
 
-use nucleo\exceptions\InvalidRouteDefinitionException;
+use nucleo\exceptions\routing\InvalidRouteDefinitionException;
 
 class Route
 {

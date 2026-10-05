@@ -2,8 +2,8 @@
 
 namespace nucleo\loadSupport;
 
-use nucleo\exceptions\LayoutNotFoundException;
-use nucleo\exceptions\ViewNotFoundException;
+use nucleo\exceptions\view\LayoutNotFoundException;
+use nucleo\exceptions\view\ViewNotFoundException;
 use InvalidArgumentException;
 use Throwable;
 

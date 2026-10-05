@@ -2,8 +2,8 @@
 
 namespace nucleo\loadSupport;
 
-use nucleo\exceptions\MethodNotAllowedException;
-use nucleo\exceptions\RouteNotFoundException;
+use nucleo\exceptions\http\MethodNotAllowedException;
+use nucleo\exceptions\routing\RouteNotFoundException;
 
 class Router
 {

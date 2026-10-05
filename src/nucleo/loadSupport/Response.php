@@ -55,6 +55,11 @@ class Response
         return $this;
     }
 
+    public function statusCode(): int
+    {
+        return $this->status;
+    }
+
     public function header(
         string $name,
         string $value
@@ -75,6 +80,11 @@ class Response
         $this->content = $content;
 
         return $this;
+    }
+
+    public function body(): string
+    {
+        return $this->content;
     }
 
     public static function html(

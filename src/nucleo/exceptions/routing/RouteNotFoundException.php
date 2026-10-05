@@ -1,6 +1,8 @@
 <?php
 
-namespace nucleo\exceptions;
+namespace nucleo\exceptions\routing;
+
+use nucleo\exceptions\GatovelException;
 
 class RouteNotFoundException extends GatovelException
 {

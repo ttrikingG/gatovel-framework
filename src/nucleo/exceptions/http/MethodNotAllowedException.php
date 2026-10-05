@@ -1,6 +1,8 @@
 <?php
 
-namespace nucleo\exceptions;
+namespace nucleo\exceptions\http;
+
+use nucleo\exceptions\GatovelException;
 
 class MethodNotAllowedException extends GatovelException
 {

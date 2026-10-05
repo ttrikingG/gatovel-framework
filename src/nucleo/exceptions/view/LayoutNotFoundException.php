@@ -1,6 +1,8 @@
 <?php
 
-namespace nucleo\exceptions;
+namespace nucleo\exceptions\view;
+
+use nucleo\exceptions\GatovelException;
 
 class LayoutNotFoundException extends GatovelException
 {

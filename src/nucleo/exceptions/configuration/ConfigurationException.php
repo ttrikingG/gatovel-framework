@@ -1,8 +1,10 @@
 <?php
 
-namespace nucleo\exceptions;
+namespace nucleo\exceptions\configuration;
 
-class InvalidRouteDefinitionException extends GatovelException
+use nucleo\exceptions\GatovelException;
+
+class ConfigurationException extends GatovelException
 {
     public function __construct(
         string $message

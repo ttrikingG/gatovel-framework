@@ -3,6 +3,7 @@
 namespace nucleo\errors;
 
 use nucleo\exceptions\GatovelException;
+use nucleo\exceptions\http\ValidationException;
 use Throwable;
 
 class ErrorRenderer
@@ -16,25 +17,38 @@ class ErrorRenderer
         );
 
         if ($debug) {
+            $error = [
+                'type' => get_class($exception),
+                'message' => $exception->getMessage(),
+                'status' => $statusCode,
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => $exception->getTraceAsString(),
+            ];
+
+            if ($exception instanceof ValidationException) {
+                $error['errors'] = $exception->errors();
+            }
+
             return [
-                'error' => [
-                    'type' => get_class($exception),
-                    'message' => $exception->getMessage(),
-                    'status' => $statusCode,
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                    'trace' => $exception->getTraceAsString(),
-                ],
+                'error' => $error,
             ];
         }
 
+        $error = [
+            'message' => self::safeMessage(
+                $statusCode
+            ),
+            'status' => $statusCode,
+        ];
+
+        if ($exception instanceof ValidationException) {
+            $error['message'] = $exception->getMessage();
+            $error['errors'] = $exception->errors();
+        }
+
         return [
-            'error' => [
-                'message' => self::safeMessage(
-                    $statusCode
-                ),
-                'status' => $statusCode,
-            ],
+            'error' => $error,
         ];
     }
 
@@ -52,9 +66,15 @@ class ErrorRenderer
         int $statusCode
     ): string {
         return match ($statusCode) {
+            400 => 'Bad Request.',
+            401 => 'Unauthorized.',
+            403 => 'Forbidden.',
             404 => 'Not Found.',
             405 => 'Method Not Allowed.',
-            419 => 'Token CSRF inválido.',
+            409 => 'Conflict.',
+            419 => 'CSRF Token Mismatch.',
+            422 => 'Unprocessable Entity.',
+            429 => 'Too Many Requests.',
             default => 'Internal Server Error.',
         };
     }

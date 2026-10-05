@@ -1,8 +1,10 @@
 <?php
 
-namespace nucleo\exceptions;
+namespace nucleo\exceptions\provider;
 
-class ConfigurationException extends GatovelException
+use nucleo\exceptions\GatovelException;
+
+class ProviderException extends GatovelException
 {
     public function __construct(
         string $message

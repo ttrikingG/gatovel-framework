@@ -2,7 +2,7 @@
 
 namespace nucleo\loadSystem;
 
-use nucleo\exceptions\ControllerNotFoundException;
+use nucleo\exceptions\controller\ControllerNotFoundException;
 use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Router;
 

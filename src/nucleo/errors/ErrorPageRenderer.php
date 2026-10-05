@@ -79,6 +79,35 @@ class ErrorPageRenderer
         int $statusCode
     ): array {
         return match ($statusCode) {
+            400 => [
+                'statusCode' => 400,
+                'title' => 'Miau... essa requisição veio estranha.',
+                'message' =>
+                    'O Gatovel não conseguiu entender a requisição '
+                    . 'enviada. Verifique os dados e tente novamente.',
+                'terminalCommand' => 'gatovel inspect request',
+                'terminalMessage' => 'bad request',
+            ],
+
+            401 => [
+                'statusCode' => 401,
+                'title' => 'Miau... primeiro precisamos saber quem é você.',
+                'message' =>
+                    'Esta área exige autenticação. '
+                    . 'Entre na sua conta e tente novamente.',
+                'terminalCommand' => 'gatovel check auth',
+                'terminalMessage' => 'unauthorized',
+            ],
+
+            403 => [
+                'statusCode' => 403,
+                'title' => 'Miau... você não pode entrar aqui.',
+                'message' =>
+                    'Você está autenticado, mas não possui permissão '
+                    . 'para acessar este recurso.',
+                'terminalCommand' => 'gatovel check permission',
+                'terminalMessage' => 'forbidden',
+            ],
 
             404 => [
                 'statusCode' => 404,
@@ -101,6 +130,16 @@ class ErrorPageRenderer
                 'terminalMessage' => 'method not allowed',
             ],
 
+            409 => [
+                'statusCode' => 409,
+                'title' => 'Miau... encontramos um conflito.',
+                'message' =>
+                    'A requisição entrou em conflito com o estado '
+                    . 'atual do recurso.',
+                'terminalCommand' => 'gatovel inspect conflict',
+                'terminalMessage' => 'resource conflict',
+            ],
+
             419 => [
                 'statusCode' => 419,
                 'title' => 'Miau... sua sessão perdeu uma vida.',
@@ -109,6 +148,26 @@ class ErrorPageRenderer
                     . 'não é mais válido. Tente novamente.',
                 'terminalCommand' => 'gatovel check session',
                 'terminalMessage' => 'csrf token expired',
+            ],
+
+            422 => [
+                'statusCode' => 422,
+                'title' => 'Miau... alguns dados não passaram na inspeção.',
+                'message' =>
+                    'Os dados enviados possuem erros de validação. '
+                    . 'Revise as informações e tente novamente.',
+                'terminalCommand' => 'gatovel validate request',
+                'terminalMessage' => 'validation failed',
+            ],
+
+            429 => [
+                'statusCode' => 429,
+                'title' => 'Miau... devagar com as requisições.',
+                'message' =>
+                    'Muitas requisições foram enviadas em pouco tempo. '
+                    . 'Aguarde um momento e tente novamente.',
+                'terminalCommand' => 'gatovel check rate',
+                'terminalMessage' => 'too many requests',
             ],
 
             default => [

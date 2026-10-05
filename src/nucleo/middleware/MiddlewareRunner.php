@@ -2,7 +2,7 @@
 
 namespace nucleo\middleware;
 
-use nucleo\exceptions\InvalidRouteDefinitionException;
+use nucleo\exceptions\routing\InvalidRouteDefinitionException;
 use nucleo\loadSupport\Request;
 use nucleo\loadSupport\Response;
 
