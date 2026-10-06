@@ -12,17 +12,11 @@ class CorsMiddleware extends Middleware
         Request $request,
         callable $next
     ): Response {
-        $origin = $_SERVER['HTTP_ORIGIN'] ?? null;
-
-        if (!$this->isAllowedOrigin($origin)) {
-            return $next(
-                $request
-            );
-        }
+        $origin = $_SERVER['HTTP_ORIGIN']
+            ?? null;
 
         if ($this->isPreflightRequest($request)) {
-            return $this->addCorsHeaders(
-                Response::noContent(),
+            return $this->handlePreflight(
                 $origin
             );
         }
@@ -31,16 +25,64 @@ class CorsMiddleware extends Middleware
             $request
         );
 
+        if (!$this->isAllowedOrigin($origin)) {
+            return $response;
+        }
+
         return $this->addCorsHeaders(
             $response,
             $origin
         );
     }
 
+    /**
+     * Verifica se a requisição representa
+     * uma negociação CORS preflight.
+     */
+    private function isPreflightRequest(
+        Request $request
+    ): bool {
+        return $request->method() === 'OPTIONS'
+            && isset(
+                $_SERVER[
+                    'HTTP_ACCESS_CONTROL_REQUEST_METHOD'
+                ]
+            );
+    }
+
+    /**
+     * Processa uma requisição preflight sem encaminhá-la
+     * para o restante do pipeline da aplicação.
+     */
+    private function handlePreflight(
+        ?string $origin
+    ): Response {
+        if (
+            !$this->isAllowedOrigin($origin)
+            || !$this->isRequestedMethodAllowed()
+            || !$this->areRequestedHeadersAllowed()
+        ) {
+            return Response::noContent()
+                ->status(403);
+        }
+
+        return $this->addCorsHeaders(
+            Response::noContent(),
+            $origin
+        );
+    }
+
+    /**
+     * Verifica a origem através de comparação exata
+     * com a allowlist configurada.
+     */
     private function isAllowedOrigin(
         ?string $origin
     ): bool {
-        if ($origin === null) {
+        if (
+            $origin === null
+            || trim($origin) === ''
+        ) {
             return false;
         }
 
@@ -56,42 +98,41 @@ class CorsMiddleware extends Middleware
         );
     }
 
-    private function isPreflightRequest(
-        Request $request
-    ): bool {
-        if (
-            $request->method() !== 'OPTIONS'
-            || !isset(
-                $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']
-            )
-        ) {
-            return false;
-        }
-
+    /**
+     * Valida o método solicitado pelo preflight.
+     */
+    private function isRequestedMethodAllowed(): bool
+    {
         $requestedMethod = strtoupper(
             trim(
-                $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']
+                $_SERVER[
+                    'HTTP_ACCESS_CONTROL_REQUEST_METHOD'
+                ] ?? ''
             )
         );
+
+        if ($requestedMethod === '') {
+            return false;
+        }
 
         $allowedMethods = Config::get(
             'cors.allowed_methods',
             []
         );
 
-        if (
-            !in_array(
-                $requestedMethod,
-                $allowedMethods,
-                true
-            )
-        ) {
-            return false;
-        }
-
-        return $this->areRequestedHeadersAllowed();
+        return in_array(
+            $requestedMethod,
+            $allowedMethods,
+            true
+        );
     }
 
+    /**
+     * Valida todos os headers solicitados pelo preflight.
+     *
+     * A comparação dos nomes é case-insensitive,
+     * conforme a semântica dos headers HTTP.
+     */
     private function areRequestedHeadersAllowed(): bool
     {
         $requestedHeaders = $_SERVER[
@@ -108,7 +149,12 @@ class CorsMiddleware extends Middleware
         );
 
         $normalizedAllowedHeaders = array_map(
-            'strtolower',
+            static fn (mixed $header): string =>
+                strtolower(
+                    trim(
+                        (string) $header
+                    )
+                ),
             $allowedHeaders
         );
 
@@ -123,7 +169,8 @@ class CorsMiddleware extends Middleware
             );
 
             if (
-                !in_array(
+                $requestedHeader === ''
+                || !in_array(
                     $requestedHeader,
                     $normalizedAllowedHeaders,
                     true
@@ -136,6 +183,10 @@ class CorsMiddleware extends Middleware
         return true;
     }
 
+    /**
+     * Adiciona os headers CORS somente depois
+     * que a origem foi explicitamente autorizada.
+     */
     private function addCorsHeaders(
         Response $response,
         string $origin

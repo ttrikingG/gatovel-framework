@@ -1,5 +1,13 @@
 <?php
 
+$defaultLogPath =
+    __DIR__
+    . '/../storage/logs/mail.log';
+
+$configuredLogPath =
+    $_ENV['MAIL_LOG_PATH']
+    ?? null;
+
 return [
 
     /*
@@ -11,7 +19,8 @@ return [
     |
     */
 
-    'transport' => $_ENV['MAIL_TRANSPORT'] ?? 'log',
+    'transport' => $_ENV['MAIL_TRANSPORT']
+        ?? 'log',
 
     /*
     |--------------------------------------------------------------------------
@@ -24,8 +33,14 @@ return [
 
     'log' => [
 
-        'path' => $_ENV['MAIL_LOG_PATH']
-            ?? __DIR__ . '/../storage/logs/mail.log',
+        'path' => is_string(
+            $configuredLogPath
+        )
+            && trim(
+                $configuredLogPath
+            ) !== ''
+                ? $configuredLogPath
+                : $defaultLogPath,
 
     ],
 

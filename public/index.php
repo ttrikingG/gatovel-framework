@@ -19,8 +19,6 @@ try {
 
     require_once __DIR__ . '/../bootstrap.php';
 
-    Session::start();
-
     $request = new Request();
 
     $globalMiddlewares = Config::get(

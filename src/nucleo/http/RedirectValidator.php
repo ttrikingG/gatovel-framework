@@ -204,13 +204,13 @@ class RedirectValidator
             );
         }
 
-        $scheme = strtolower(
+        $refererScheme = strtolower(
             (string) ($parts['scheme'] ?? '')
         );
 
         if (
             !in_array(
-                $scheme,
+                $refererScheme,
                 [
                     'http',
                     'https',
@@ -221,11 +221,116 @@ class RedirectValidator
             return false;
         }
 
+        $requestScheme =
+            self::requestScheme();
+
+        if (
+            $requestScheme === null
+            || !hash_equals(
+                $requestScheme,
+                $refererScheme
+            )
+        ) {
+            return false;
+        }
+
+        $requestAuthority =
+            self::requestAuthority(
+                $requestScheme
+            );
+
+        if ($requestAuthority === null) {
+            return false;
+        }
+
+        $refererAuthority =
+            self::authority(
+                strtolower(
+                    $parts['host']
+                ),
+                isset($parts['port'])
+                    ? (int) $parts['port']
+                    : null,
+                $refererScheme
+            );
+
+        return hash_equals(
+            $requestAuthority,
+            $refererAuthority
+        );
+    }
+
+    private static function requestScheme(): ?string
+    {
+        $https = $_SERVER['HTTPS']
+            ?? null;
+
+        if (
+            is_string($https)
+            && $https !== ''
+            && strtolower($https) !== 'off'
+            && $https !== '0'
+        ) {
+            return 'https';
+        }
+
+        $requestScheme = $_SERVER[
+            'REQUEST_SCHEME'
+        ] ?? null;
+
+        if (is_string($requestScheme)) {
+            $requestScheme = strtolower(
+                trim(
+                    $requestScheme
+                )
+            );
+
+            if (
+                in_array(
+                    $requestScheme,
+                    [
+                        'http',
+                        'https',
+                    ],
+                    true
+                )
+            ) {
+                return $requestScheme;
+            }
+        }
+
+        $serverPort = $_SERVER[
+            'SERVER_PORT'
+        ] ?? null;
+
+        if (
+            is_numeric($serverPort)
+            && (int) $serverPort === 443
+        ) {
+            return 'https';
+        }
+
+        if (
+            is_numeric($serverPort)
+            && (int) $serverPort === 80
+        ) {
+            return 'http';
+        }
+
+        return null;
+    }
+
+    private static function requestAuthority(
+        string $scheme
+    ): ?string {
         $requestHost = $_SERVER['HTTP_HOST']
             ?? '';
 
-        if (!is_string($requestHost)) {
-            return false;
+        if (
+            !is_string($requestHost)
+            || trim($requestHost) === ''
+        ) {
+            return null;
         }
 
         $requestHost = strtolower(
@@ -234,27 +339,44 @@ class RedirectValidator
             )
         );
 
-        if ($requestHost === '') {
-            return false;
-        }
-
-        $refererHost = strtolower(
-            $parts['host']
+        $parts = parse_url(
+            $scheme
+            . '://'
+            . $requestHost
         );
 
-        $refererPort = $parts['port']
-            ?? null;
-
-        $refererAuthority = $refererHost;
-
-        if ($refererPort !== null) {
-            $refererAuthority .= ':'
-                . $refererPort;
+        if (
+            $parts === false
+            || !isset($parts['host'])
+        ) {
+            return null;
         }
 
-        return hash_equals(
-            $requestHost,
-            $refererAuthority
+        return self::authority(
+            strtolower(
+                $parts['host']
+            ),
+            isset($parts['port'])
+                ? (int) $parts['port']
+                : null,
+            $scheme
         );
+    }
+
+    private static function authority(
+        string $host,
+        ?int $port,
+        string $scheme
+    ): string {
+        $defaultPort =
+            $scheme === 'https'
+                ? 443
+                : 80;
+
+        $port ??= $defaultPort;
+
+        return $host
+            . ':'
+            . $port;
     }
 }

@@ -1,5 +1,12 @@
 <?php
 
+$defaultPath =
+    __DIR__
+    . '/../storage/logs/gatovel.log';
+
+$configuredPath = $_ENV['LOG_PATH']
+    ?? null;
+
 return [
 
     /*
@@ -25,7 +32,9 @@ return [
     |
     */
 
-    'path' => $_ENV['LOG_PATH']
-        ?? __DIR__ . '/../storage/logs/gatovel.log',
+    'path' => is_string($configuredPath)
+        && trim($configuredPath) !== ''
+            ? $configuredPath
+            : $defaultPath,
 
 ];
