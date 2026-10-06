@@ -2,47 +2,16 @@
 
 namespace nucleo\session;
 
-use RuntimeException;
-
 class Session
 {
-    private const FLASH_KEY = '_gatovel_flash';
-
-    private const OLD_INPUT_KEY = '_gatovel_old_input';
-
-    private static bool $flashPrepared = false;
-
     public static function start(): void
     {
-        if (!self::isStarted()) {
-            if (headers_sent()) {
-                throw new RuntimeException(
-                    'Não foi possível iniciar a sessão porque os headers já foram enviados.'
-                );
-            }
-
-            $started = session_start([
-                'cookie_httponly' => true,
-                'cookie_samesite' => 'Lax',
-                'use_strict_mode' => true,
-            ]);
-
-            if (!$started) {
-                throw new RuntimeException(
-                    'Não foi possível iniciar a sessão.'
-                );
-            }
-
-            self::$flashPrepared = false;
-        }
-
-        self::prepareFlash();
+        SessionManager::start();
     }
 
     public static function isStarted(): bool
     {
-        return session_status()
-            === PHP_SESSION_ACTIVE;
+        return SessionManager::isStarted();
     }
 
     public static function set(
@@ -106,51 +75,25 @@ class Session
 
         $_SESSION = [];
 
-        self::$flashPrepared = true;
+        Flash::markPrepared();
     }
 
     public static function regenerate(
         bool $deleteOldSession = true
     ): void {
-        self::start();
-
-        if (
-            !session_regenerate_id(
-                $deleteOldSession
-            )
-        ) {
-            throw new RuntimeException(
-                'Não foi possível regenerar o identificador da sessão.'
-            );
-        }
+        SessionManager::regenerate(
+            $deleteOldSession
+        );
     }
 
     public static function close(): void
     {
-        if (!self::isStarted()) {
-            return;
-        }
-
-        session_write_close();
-
-        self::$flashPrepared = false;
+        SessionManager::close();
     }
 
     public static function destroy(): void
     {
-        if (!self::isStarted()) {
-            return;
-        }
-
-        $_SESSION = [];
-
-        if (!session_destroy()) {
-            throw new RuntimeException(
-                'Não foi possível destruir a sessão.'
-            );
-        }
-
-        self::$flashPrepared = false;
+        SessionManager::destroy();
     }
 
     public static function flash(
@@ -159,8 +102,10 @@ class Session
     ): void {
         self::start();
 
-        $_SESSION[self::FLASH_KEY]['new'][$key]
-            = $value;
+        Flash::put(
+            $key,
+            $value
+        );
     }
 
     public static function getFlash(
@@ -169,19 +114,10 @@ class Session
     ): mixed {
         self::start();
 
-        $flash = $_SESSION[self::FLASH_KEY]['old']
-            ?? [];
-
-        if (
-            !array_key_exists(
-                $key,
-                $flash
-            )
-        ) {
-            return $default;
-        }
-
-        return $flash[$key];
+        return Flash::get(
+            $key,
+            $default
+        );
     }
 
     public static function hasFlash(
@@ -189,10 +125,8 @@ class Session
     ): bool {
         self::start();
 
-        return array_key_exists(
-            $key,
-            $_SESSION[self::FLASH_KEY]['old']
-                ?? []
+        return Flash::has(
+            $key
         );
     }
 
@@ -200,15 +134,15 @@ class Session
     {
         self::start();
 
-        return $_SESSION[self::FLASH_KEY]['old']
-            ?? [];
+        return Flash::all();
     }
 
     public static function flashInput(
         array $input
     ): void {
-        self::flash(
-            self::OLD_INPUT_KEY,
+        self::start();
+
+        Flash::input(
             $input
         );
     }
@@ -217,85 +151,28 @@ class Session
         string $key,
         mixed $default = null
     ): mixed {
-        $input = self::oldInput();
+        self::start();
 
-        if ($key === '') {
-            return $default;
-        }
-
-        $segments = explode(
-            '.',
-            $key
+        return Flash::old(
+            $key,
+            $default
         );
-
-        $value = $input;
-
-        foreach ($segments as $segment) {
-            if (
-                !is_array($value)
-                || !array_key_exists(
-                    $segment,
-                    $value
-                )
-            ) {
-                return $default;
-            }
-
-            $value = $value[$segment];
-        }
-
-        return $value;
     }
 
     public static function hasOld(
         string $key
     ): bool {
-        $marker = new \stdClass();
+        self::start();
 
-        return self::old(
-            $key,
-            $marker
-        ) !== $marker;
+        return Flash::hasOld(
+            $key
+        );
     }
 
     public static function oldInput(): array
     {
-        $input = self::getFlash(
-            self::OLD_INPUT_KEY,
-            []
-        );
+        self::start();
 
-        return is_array($input)
-            ? $input
-            : [];
-    }
-
-    private static function prepareFlash(): void
-    {
-        if (self::$flashPrepared) {
-            return;
-        }
-
-        $flash = $_SESSION[self::FLASH_KEY]
-            ?? [];
-
-        $new = is_array(
-            $flash['new'] ?? null
-        )
-            ? $flash['new']
-            : [];
-
-        unset(
-            $_SESSION[self::FLASH_KEY]
-        );
-
-        if ($new !== []) {
-            $_SESSION[self::FLASH_KEY] = [
-                'old' => $new,
-                'new' => [],
-            ];
-        }
-
-        self::$flashPrepared = true;
+        return Flash::oldInput();
     }
 }

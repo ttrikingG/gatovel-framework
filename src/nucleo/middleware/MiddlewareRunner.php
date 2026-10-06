@@ -2,6 +2,7 @@
 
 namespace nucleo\middleware;
 
+use nucleo\container\Container;
 use nucleo\exceptions\routing\InvalidRouteDefinitionException;
 use nucleo\http\Request;
 use nucleo\http\Response;
@@ -11,7 +12,8 @@ class MiddlewareRunner
     public static function run(
         Request $request,
         array $middlewares,
-        callable $controller
+        callable $controller,
+        Container $container
     ): Response {
         $next = function (
             Request $request
@@ -33,9 +35,12 @@ class MiddlewareRunner
                 Request $request
             ) use (
                 $middleware,
-                $next
+                $next,
+                $container
             ): Response {
-                $instance = new $middleware();
+                $instance = $container->get(
+                    $middleware
+                );
 
                 return $instance->handle(
                     $request,

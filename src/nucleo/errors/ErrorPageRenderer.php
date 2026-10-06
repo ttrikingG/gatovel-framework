@@ -2,16 +2,23 @@
 
 namespace nucleo\errors;
 
+use nucleo\http\Request;
+use nucleo\security\Csp;
 use Throwable;
 
 class ErrorPageRenderer
 {
     public static function render(
         Throwable $exception,
-        int $statusCode
+        int $statusCode,
+        ?Request $request = null
     ): string {
         $data = self::pageData(
             $statusCode
+        );
+
+        $data['cspNonce'] = self::cspNonce(
+            $request
         );
 
         $viewFile = __DIR__
@@ -47,8 +54,13 @@ class ErrorPageRenderer
 
     public static function renderDebug(
         Throwable $exception,
-        int $statusCode
+        int $statusCode,
+        ?Request $request = null
     ): string {
+        $cspNonce = self::cspNonce(
+            $request
+        );
+
         $viewFile = __DIR__
             . '/views/debug.php';
 
@@ -73,6 +85,26 @@ class ErrorPageRenderer
         }
 
         return $content;
+    }
+
+    private static function cspNonce(
+        ?Request $request
+    ): string {
+        if ($request === null) {
+            return '';
+        }
+
+        if (
+            !$request->hasAttribute(
+                Csp::NONCE_ATTRIBUTE
+            )
+        ) {
+            return '';
+        }
+
+        return Csp::htmlNonce(
+            $request
+        );
     }
 
     private static function pageData(

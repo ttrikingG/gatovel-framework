@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use nucleo\http\Request;
 use nucleo\http\Response;
+use nucleo\security\Csp;
 use nucleo\view\View;
 
 abstract class Controller
@@ -31,8 +33,15 @@ abstract class Controller
         string $view,
         array $data = [],
         int $status = 200,
-        string $layout = 'App'
+        string $layout = 'App',
+        ?Request $request = null
     ): Response {
+        if ($request !== null) {
+            $data['cspNonce'] = Csp::htmlNonce(
+                $request
+            );
+        }
+
         return Response::html(
             View::render(
                 $view,

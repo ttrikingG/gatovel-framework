@@ -2,12 +2,17 @@
 
 namespace nucleo\providers;
 
+use nucleo\container\Container;
 use nucleo\exceptions\provider\ProviderException;
 
 class ProviderLoader
 {
-    public static function load(array $providers): void
-    {
+    public static function load(
+        array $providers,
+        Container $container
+    ): void {
+        $instances = [];
+
         foreach ($providers as $provider) {
 
             if (!is_string($provider)) {
@@ -22,13 +27,25 @@ class ProviderLoader
                 );
             }
 
-            if (!method_exists($provider, 'boot')) {
+            if (!is_subclass_of($provider, ServiceProvider::class)) {
                 throw new ProviderException(
-                    "O provider {$provider} deve possuir o método boot()."
+                    "O provider {$provider} deve estender "
+                    . ServiceProvider::class
+                    . '.'
                 );
             }
 
-            $provider::boot();
+            $instances[] = $container->get(
+                $provider
+            );
+        }
+
+        foreach ($instances as $provider) {
+            $provider->register();
+        }
+
+        foreach ($instances as $provider) {
+            $provider->boot();
         }
     }
 }

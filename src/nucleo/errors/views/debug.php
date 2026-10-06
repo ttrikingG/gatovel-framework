@@ -89,7 +89,7 @@ if (
         <?= $escape($statusCode) ?> Exception | Gatovel Framework
     </title>
 
-    <style>
+    <style nonce="<?= $cspNonce ?? '' ?>">
 
         * {
             box-sizing: border-box;

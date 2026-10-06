@@ -56,7 +56,8 @@ class ErrorHandler
         if ($debug) {
             $html = ErrorPageRenderer::renderDebug(
                 $exception,
-                $statusCode
+                $statusCode,
+                $request
             );
 
             return Response::html(
@@ -67,7 +68,8 @@ class ErrorHandler
 
         $html = ErrorPageRenderer::render(
             $exception,
-            $statusCode
+            $statusCode,
+            $request
         );
 
         return Response::html(

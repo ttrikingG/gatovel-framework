@@ -148,6 +148,11 @@ class Response
         string $url,
         int $status = 302
     ): static {
+        $url = RedirectValidator::internal(
+            $url,
+            $status
+        );
+
         return new static(
             '',
             $status,

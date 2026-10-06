@@ -14,7 +14,7 @@ $escape = static function (
 };
 ?>
 
-<style>
+<style nonce="<?= $cspNonce ?? '' ?>">
 
     * {
         box-sizing: border-box;

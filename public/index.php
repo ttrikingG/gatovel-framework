@@ -31,11 +31,13 @@ try {
     $response = MiddlewareRunner::run(
         $request,
         $globalMiddlewares,
-        function (Request $request): Response {
+        function (Request $request) use ($container): Response {
 
             try {
 
-                $controller = (new StageOne())->load(
+                $controller = (new StageOne(
+                    $container
+                ))->load(
                     $request
                 );
 
@@ -69,7 +71,8 @@ try {
                             $request,
                             $parameters
                         );
-                    }
+                    },
+                    $container
                 );
 
             } catch (\Throwable $exception) {
@@ -79,7 +82,8 @@ try {
                     $request
                 );
             }
-        }
+        },
+        $container
     );
 
     $response->send();

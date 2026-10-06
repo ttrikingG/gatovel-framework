@@ -2,7 +2,6 @@
 
 namespace nucleo\http;
 
-use InvalidArgumentException;
 use nucleo\session\Session;
 
 class Redirect extends Response
@@ -26,11 +25,25 @@ class Redirect extends Response
         string $url,
         int $status = 302
     ): static {
-        if ($url === '') {
-            throw new InvalidArgumentException(
-                'A URL de redirecionamento não pode ser vazia.'
-            );
-        }
+        $url = RedirectValidator::internal(
+            $url,
+            $status
+        );
+
+        return new static(
+            $url,
+            $status
+        );
+    }
+
+    public static function away(
+        string $url,
+        int $status = 302
+    ): static {
+        $url = RedirectValidator::external(
+            $url,
+            $status
+        );
 
         return new static(
             $url,
@@ -45,12 +58,15 @@ class Redirect extends Response
         $referer = $_SERVER['HTTP_REFERER']
             ?? null;
 
-        $url = is_string($referer)
-            && $referer !== ''
+        $url = RedirectValidator::referer(
+            is_string($referer)
                 ? $referer
-                : $fallback;
+                : null,
+            $fallback,
+            $status
+        );
 
-        return static::to(
+        return new static(
             $url,
             $status
         );

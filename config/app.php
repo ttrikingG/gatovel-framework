@@ -2,6 +2,7 @@
 
 use app\providers\MailServiceProvider;
 use nucleo\middleware\CorsMiddleware;
+use nucleo\middleware\SecurityHeadersMiddleware;
 
 return [
 
@@ -75,6 +76,7 @@ return [
 
     'middlewares' => [
 
+        SecurityHeadersMiddleware::class,
         CorsMiddleware::class,
 
     ],

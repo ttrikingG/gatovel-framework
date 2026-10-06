@@ -16,7 +16,10 @@ class HomeController extends Controller
             [
                 'title' => 'Gatovel Framework',
                 'message' => 'Gatovel Framework is running.'
-            ]
+            ],
+            200,
+            'App',
+            $request
         );
     }
 }

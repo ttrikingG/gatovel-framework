@@ -10,6 +10,8 @@ class Request
 
     private ?array $uploadedFiles = null;
 
+    private array $attributes = [];
+
     public function method(): string
     {
         return strtoupper(
@@ -264,6 +266,51 @@ class Request
         }
 
         return $ip;
+    }
+
+    public function setAttribute(
+        string $key,
+        mixed $value
+    ): static {
+        if ($key === '') {
+            throw new \InvalidArgumentException(
+                'O nome do atributo da requisição não pode ser vazio.'
+            );
+        }
+
+        $this->attributes[$key] = $value;
+
+        return $this;
+    }
+
+    public function attribute(
+        string $key,
+        mixed $default = null
+    ): mixed {
+        if ($key === '') {
+            return $default;
+        }
+
+        return $this->attributes[$key]
+            ?? $default;
+    }
+
+    public function hasAttribute(
+        string $key
+    ): bool {
+        if ($key === '') {
+            return false;
+        }
+
+        return array_key_exists(
+            $key,
+            $this->attributes
+        );
+    }
+
+    public function attributes(): array
+    {
+        return $this->attributes;
     }
 
     public function all(): array

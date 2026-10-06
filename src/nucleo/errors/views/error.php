@@ -50,7 +50,7 @@ $escape = static function (
         <?= $escape($statusCode) ?> | Gatovel Framework
     </title>
 
-    <style>
+    <style nonce="<?= $cspNonce ?? '' ?>">
 
         * {
             box-sizing: border-box;
